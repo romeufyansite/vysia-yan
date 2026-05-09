@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Layers, Menu } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Menu, ListMusic, Eye, Pencil, Trash2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,45 +8,135 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import type { Screen, Playlist } from '@/types';
+import type { Screen, PlaylistItem, Zone, ZoneTemplate } from '@/types';
 import { playlistService } from '@/services/playlist.service';
 
 interface ScreenCardProps {
   screen: Screen;
-  playlists: Playlist[];
   onClick: () => void;
-  onPlaylistChange: (playlistId: string) => void;
   onStatusChange: (status: 'online' | 'offline') => void;
   onPreview: () => void;
-  onRefresh: () => void;
   onEdit: () => void;
-  onMove: () => void;
   onDelete: () => void;
-  onCreatePlaylist?: () => void;
+}
+
+const TEMPLATE_LAYOUTS: Record<ZoneTemplate, { zones: number; className: string }> = {
+  fullscreen: { zones: 1, className: 'grid-cols-1' },
+  '70-30': { zones: 2, className: 'grid-cols-[70%_30%]' },
+  '30-70': { zones: 2, className: 'grid-cols-[30%_70%]' },
+  banner: { zones: 2, className: 'grid-rows-[80%_20%]' },
+};
+
+function ZoneThumbnail({ playlistId, zoneLabel }: { playlistId: string | null; zoneLabel: string }) {
+  const [item, setItem] = useState<PlaylistItem | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!playlistId) {
+      setItem(null);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    playlistService
+      .getItems(playlistId)
+      .then((items) => {
+        if (!cancelled) setItem(items[0] || null);
+      })
+      .catch(() => {
+        if (!cancelled) setItem(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [playlistId]);
+
+  const renderContent = () => {
+    if (loading) {
+      return <div className="w-full h-full bg-gray-200 animate-pulse" />;
+    }
+
+    if (!item) {
+      return (
+        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-700 to-slate-800">
+          <ListMusic className="h-3 w-3 text-white/40" />
+          <span className="text-[6px] text-white/30 uppercase mt-0.5">{zoneLabel}</span>
+        </div>
+      );
+    }
+
+    const { app_type, config } = item;
+
+    if (app_type === 'image' && config?.imageUrl) {
+      return (
+        <img
+          src={config.imageUrl}
+          alt=""
+          className="w-full h-full object-cover"
+        />
+      );
+    }
+
+    if (app_type === 'video' && (config?.videoUrl || config?.url)) {
+      return (
+        <video
+          src={config.videoUrl || config.url}
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        />
+      );
+    }
+
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-700 to-slate-800">
+        <ListMusic className="h-3 w-3 text-white/40" />
+        <span className="text-[6px] text-white/30 uppercase mt-0.5">{zoneLabel}</span>
+      </div>
+    );
+  };
+
+  return (
+    <div className="relative w-full h-full overflow-hidden">
+      {renderContent()}
+      {/* Overlay avec le label */}
+      <div className="absolute inset-0 bg-black/20" />
+    </div>
+  );
+}
+
+function ScreenZonesPreview({ screen }: { screen: Screen }) {
+  const template = screen.template || 'fullscreen';
+  const layout = TEMPLATE_LAYOUTS[template];
+  const zones = screen.zones || [];
+
+  return (
+    <div className={`w-full h-full grid ${layout.className} ${template === 'banner' ? 'grid-rows-[80%_20%]' : ''} overflow-hidden rounded`}>
+      {Array.from({ length: layout.zones }).map((_, index) => {
+        const zone = zones[index];
+        const zoneLabel = `Zone ${String.fromCharCode(65 + index)}`;
+
+        return (
+          <div key={index} className="relative overflow-hidden">
+            <ZoneThumbnail playlistId={zone?.playlist_id || null} zoneLabel={zoneLabel} />
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 export function ScreenCard({
   screen,
-  playlists,
-  onPlaylistChange,
+  onClick,
   onStatusChange,
   onPreview,
-  onRefresh,
   onEdit,
-  onMove,
   onDelete,
-  onCreatePlaylist,
 }: ScreenCardProps) {
-  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
-  const [selectOpen, setSelectOpen] = useState(false);
-
   const getDeviceTypeLabel = (deviceType?: string) => {
     switch (deviceType) {
       case 'connected_tv':
@@ -59,31 +149,6 @@ export function ScreenCard({
         return 'TV CONNECTÉE';
     }
   };
-
-  useEffect(() => {
-    const loadPlaylistThumbnail = async () => {
-      if (!screen.playlist_id) {
-        setThumbnailUrl(null);
-        return;
-      }
-
-      try {
-        const items = await playlistService.getItems(screen.playlist_id);
-        const firstImageItem = items.find(item => item.app_type === 'image');
-
-        if (firstImageItem && firstImageItem.config?.imageUrl) {
-          setThumbnailUrl(firstImageItem.config.imageUrl);
-        } else {
-          setThumbnailUrl(null);
-        }
-      } catch (error) {
-        console.error('Error loading playlist thumbnail:', error);
-        setThumbnailUrl(null);
-      }
-    };
-
-    loadPlaylistThumbnail();
-  }, [screen.playlist_id]);
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-200 rounded-2xl bg-white">
@@ -127,14 +192,8 @@ export function ScreenCard({
                 <DropdownMenuItem onClick={onPreview}>
                   Aperçu
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={onRefresh}>
-                  Actualiser
-                </DropdownMenuItem>
                 <DropdownMenuItem onClick={onEdit}>
-                  Éditer
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onMove}>
-                  Déplacer
+                  Modifier
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onDelete} className="text-red-600">
                   Supprimer
@@ -143,82 +202,61 @@ export function ScreenCard({
             </DropdownMenu>
           </div>
 
-          <div className="text-[8px] text-gray-500 font-medium mb-3 -mt-3 ml-[18px]">
+          <div className="text-[8px] text-gray-500 font-medium mb-6 -mt-3 ml-[18px]  pb-4 border-b border-gray-200">
             {getDeviceTypeLabel(screen.device_type)}
           </div>
 
+          {/* Zone-based preview */}
           <div className="relative aspect-video w-full rounded-lg mb-1 overflow-hidden flex items-center justify-center">
             {screen.orientation === 'portrait' ? (
-              <div className="relative h-full rounded overflow-hidden flex items-center justify-center" style={{ aspectRatio: '9/16' }}>
-                <div className="absolute inset-0 bg-gray-100" />
-                {thumbnailUrl ? (
-                  <img
-                    src={thumbnailUrl}
-                    alt="Playlist preview"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                ) : null}
+              <div className="relative h-full rounded overflow-hidden" style={{ aspectRatio: '9/16' }}>
+                <ScreenZonesPreview screen={screen} />
               </div>
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-b from-gray-50 to-gray-100" />
-                {thumbnailUrl ? (
-                  <img
-                    src={thumbnailUrl}
-                    alt="Playlist preview"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="relative aspect-video w-full bg-gray-100 rounded-lg" />
-                )}
+              <div className="absolute inset-0 flex items-center justify-center p-1">
+                <div className="relative w-full h-full rounded overflow-hidden">
+                  <ScreenZonesPreview screen={screen} />
+                </div>
               </div>
             )}
           </div>
 
+          {/* Stand */}
           <div className="flex justify-center items-center mb-0.5">
             <div className="w-1 h-3 bg-gray-600" />
           </div>
           <div className="flex justify-center items-center mb-4">
             <div className="w-24 h-1 bg-gray-600" />
           </div>
-          
 
+          {/* Action buttons */}
           <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-            <span className="text-xs text-gray-600 font-medium">Playlist</span>
-            <Select
-              value={screen.playlist_id || ''}
-              onValueChange={onPlaylistChange}
-              open={selectOpen}
-              onOpenChange={setSelectOpen}
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 h-9 rounded-lg border-gray-200 text-xs font-medium hover:bg-gray-50"
+              onClick={onPreview}
             >
-              <SelectTrigger className="flex-1 h-9 rounded-lg border-gray-200 text-sm">
-                <div className="flex items-center gap-2">
-                  <Layers className="h-3.5 w-3.5 text-gray-400" />
-                  <SelectValue placeholder="Sélectionner" />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {playlists.map((playlist) => (
-                  <SelectItem key={playlist.id} value={playlist.id}>
-                    {playlist.name}
-                  </SelectItem>
-                ))}
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-xs text-gray-600 mt-1 hover:bg-gray-100"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setSelectOpen(false);
-                    setTimeout(() => {
-                      onCreatePlaylist?.();
-                    }, 100);
-                  }}
-                >
-                  + Créer une playlist
-                </Button>
-              </SelectContent>
-            </Select>
+              <Eye className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
+              Aperçu
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 h-9 rounded-lg border-gray-200 text-xs font-medium hover:bg-gray-50"
+              onClick={onEdit}
+            >
+              <Pencil className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
+              Modifier
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 w-9 p-0 rounded-lg border-gray-200 hover:bg-red-50 hover:border-red-200 hover:text-red-600"
+              onClick={onDelete}
+            >
+              <Trash2 className="h-3.5 w-3.5 text-gray-500 hover:text-red-600" />
+            </Button>
           </div>
         </div>
       </CardContent>

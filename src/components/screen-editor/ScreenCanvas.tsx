@@ -10,7 +10,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { CanvasOverlay } from './CanvasOverlay';
-import type { Zone, ZoneTemplate, Overlay, ScreenOrientation, Playlist } from '@/types';
+import { playlistService } from '@/services/playlist.service';
+import type { Zone, ZoneTemplate, Overlay, ScreenOrientation, Playlist, PlaylistItem } from '@/types';
 
 interface ScreenCanvasProps {
   template: ZoneTemplate;
@@ -121,6 +122,61 @@ export function ScreenCanvas({
   );
 }
 
+function PlaylistBackground({ playlistId }: { playlistId: string }) {
+  const [firstItem, setFirstItem] = useState<PlaylistItem | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    playlistService
+      .getItems(playlistId)
+      .then((items) => {
+        if (!cancelled) {
+          setFirstItem(items[0] || null);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setFirstItem(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [playlistId]);
+
+  if (loading || !firstItem) return null;
+
+  const { app_type, config } = firstItem;
+
+  if (app_type === 'image' && config?.imageUrl) {
+    return (
+      <img
+        src={config.imageUrl}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+    );
+  }
+
+  if (app_type === 'video' && (config?.videoUrl || config?.url)) {
+    return (
+      <video
+        src={config.videoUrl || config.url}
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+    );
+  }
+
+  return null;
+}
+
 function ZoneSlot({
   zone,
   zoneLabel,
@@ -141,17 +197,22 @@ function ZoneSlot({
 
   if (playlistId && assigned) {
     return (
-      <div className="relative flex flex-col items-center justify-center gap-2 border border-slate-800 bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 px-4 py-6 text-white/95 text-center">
-        <ListMusic className="h-10 w-10 text-white/75 shrink-0" />
-        <div className="text-xs font-semibold uppercase tracking-wide text-white/45">{zoneLabel}</div>
-        <div className="text-sm font-semibold leading-tight line-clamp-2">{assigned.name}</div>
+      <div className="relative flex flex-col items-center justify-center gap-2 border border-slate-800 bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 px-4 py-6 text-white/95 text-center overflow-hidden">
+        {/* Background preview of the first media in the playlist */}
+        <div className="absolute inset-0 z-0">
+          <PlaylistBackground playlistId={playlistId} />
+          <div className="absolute inset-0 bg-slate-900/60" />
+        </div>
+        <ListMusic className="h-10 w-10 text-white/75 shrink-0 relative z-10" />
+        <div className="text-xs font-semibold uppercase tracking-wide text-white/45 relative z-10">{zoneLabel}</div>
+        <div className="text-sm font-semibold leading-tight line-clamp-2 relative z-10">{assigned.name}</div>
         {canAssign && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="secondary"
                 size="sm"
-                className="mt-1 rounded-lg bg-white/10 text-white hover:bg-white/20 border-0"
+                className="mt-1 rounded-lg bg-white/10 text-white hover:bg-white/20 border-0 relative z-10"
               >
                 Modifier
               </Button>
@@ -242,9 +303,6 @@ function ZoneSlot({
 
   return (
     <div className="relative flex flex-col items-center justify-center gap-3 border border-slate-800 bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900">
-      <span className="absolute top-2 left-2 text-[10px] font-semibold uppercase tracking-wide text-white/35">
-        {zoneLabel}
-      </span>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -272,6 +330,9 @@ function ZoneSlot({
           )}
         </DropdownMenuContent>
       </DropdownMenu>
+      <span className="text-[10px] font-semibold uppercase tracking-wide text-white/35">
+        {zoneLabel}
+      </span>
     </div>
   );
 }

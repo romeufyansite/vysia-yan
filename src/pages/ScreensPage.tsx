@@ -76,18 +76,6 @@ export function ScreensPage() {
     window.location.hash = '/playlists?create=true';
   };
 
-
-  const handlePlaylistChange = async (screenId: string, playlistId: string) => {
-    try {
-      await screenService.update(screenId, { playlist_id: playlistId });
-      toast.success('Playlist mise à jour');
-      loadData();
-    } catch (error) {
-      console.error('Error updating playlist:', error);
-      toast.error('Erreur lors de la mise à jour');
-    }
-  };
-
   const handleStatusChange = async (screenId: string, status: 'online' | 'offline') => {
     try {
       await screenService.update(screenId, { status });
@@ -292,18 +280,11 @@ export function ScreensPage() {
             <ScreenCard
               key={screen.id}
               screen={screen}
-              playlists={playlists}
               onClick={() => (window.location.hash = `/screens/${screen.id}`)}
-              onPlaylistChange={(playlistId) =>
-                handlePlaylistChange(screen.id, playlistId)
-              }
               onStatusChange={(status) => handleStatusChange(screen.id, status)}
               onPreview={() => toast.info('Aperçu non implémenté')}
-              onRefresh={() => toast.info('Actualisation...')}
               onEdit={() => (window.location.hash = `/screens/${screen.id}`)}
-              onMove={() => toast.info('Déplacement non implémenté')}
               onDelete={canManage ? () => openDeleteDialog(screen.id) : () => denyManage()}
-              onCreatePlaylist={canManage ? handleCreatePlaylist : undefined}
             />
           ))}
           {canManage && <AddScreenCard onClick={() => setConnectModalOpen(true)} />}
