@@ -280,7 +280,6 @@ export function ScreensPage() {
             <ScreenCard
               key={screen.id}
               screen={screen}
-              onClick={() => (window.location.hash = `/screens/${screen.id}`)}
               onStatusChange={(status) => handleStatusChange(screen.id, status)}
               onPreview={() => toast.info('Aperçu non implémenté')}
               onEdit={() => (window.location.hash = `/screens/${screen.id}`)}

@@ -13,7 +13,6 @@ import { playlistService } from '@/services/playlist.service';
 
 interface ScreenCardProps {
   screen: Screen;
-  onClick: () => void;
   onStatusChange: (status: 'online' | 'offline') => void;
   onPreview: () => void;
   onEdit: () => void;
@@ -152,29 +151,32 @@ export function ScreenCard({
     }
   };
 
+  // Bloquer la propagation du clic pour le header
+  const handleHeaderClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <Card
-      className="overflow-hidden hover:shadow-lg transition-all duration-200 rounded-2xl bg-white relative"
-      onClick={onClick}
-    >
+    <Card className="overflow-hidden hover:shadow-lg transition-all duration-200 rounded-2xl bg-white relative">
       <CardContent className="p-0 relative">
         {/* Overlay blur - couvre toute la carte quand la partie basse est en hover */}
         <div
           className={`absolute inset-0 bg-white/60 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-2xl transition-opacity duration-300 cursor-pointer ${
-            isBodyHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            isBodyHovered ? 'opacity-100' : 'opacity-0'
           }`}
-          onClick={onClick}
+          style={{ pointerEvents: isBodyHovered ? 'auto' : 'none' }}
+          onClick={onEdit}
         >
           <Settings className="h-12 w-12 text-gray-700 mb-2" />
           <span className="text-sm font-medium text-gray-700">Modifier</span>
         </div>
 
         <div className="p-5 relative z-20">
-          {/* Header - toujours accessible, au dessus du blur */}
-          <div className="flex items-start justify-between mb-1">
+          {/* Header - bloque la propagation du clic */}
+          <div className="flex items-start justify-between mb-1" onClick={handleHeaderClick}>
             <div className="flex items-center gap-2">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                     <div
                       className={`w-2.5 h-2.5 rounded-full ${
@@ -202,7 +204,7 @@ export function ScreenCard({
 
             {/* Menu 3 points */}
             <DropdownMenu>
-              <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-7 w-7 -mr-2">
                   <Menu className="h-5 w-5 text-gray-600" />
                 </Button>
@@ -221,16 +223,16 @@ export function ScreenCard({
             </DropdownMenu>
           </div>
 
-          <div className="text-[8px] text-gray-500 font-medium mb-6 -mt-3 ml-[18px] pb-4 border-b border-gray-200">
+          <div className="text-[8px] text-gray-500 font-medium mb-6 -mt-3 ml-[18px] pb-4 border-b border-gray-200" onClick={handleHeaderClick}>
             {getDeviceTypeLabel(screen.device_type)}
           </div>
 
-          {/* Body - déclenche le blur overlay au hover */}
+          {/* Body - déclenche le blur overlay au hover, et ouvre edit au clic */}
           <div
             className="relative cursor-pointer"
             onMouseEnter={() => setIsBodyHovered(true)}
             onMouseLeave={() => setIsBodyHovered(false)}
-            style={{ minHeight: '100px' }}
+            onClick={onEdit}
           >
             {/* Zone-based preview */}
             <div className="relative aspect-video w-full rounded-lg mb-1 overflow-hidden flex items-center justify-center">
