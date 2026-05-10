@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Menu, ListMusic, Eye, Pencil, Trash2 } from 'lucide-react';
+import { ListMusic, Settings } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,9 +14,6 @@ interface ScreenCardProps {
   screen: Screen;
   onClick: () => void;
   onStatusChange: (status: 'online' | 'offline') => void;
-  onPreview: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
 }
 
 const TEMPLATE_LAYOUTS: Record<ZoneTemplate, { zones: number; className: string }> = {
@@ -133,9 +129,6 @@ export function ScreenCard({
   screen,
   onClick,
   onStatusChange,
-  onPreview,
-  onEdit,
-  onDelete,
 }: ScreenCardProps) {
   const getDeviceTypeLabel = (deviceType?: string) => {
     switch (deviceType) {
@@ -151,7 +144,10 @@ export function ScreenCard({
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-all duration-200 rounded-2xl bg-white">
+    <Card
+      className="overflow-hidden hover:shadow-lg transition-all duration-200 rounded-2xl bg-white group cursor-pointer relative"
+      onClick={onClick}
+    >
       <CardContent className="p-0">
         <div className="p-5">
           <div className="flex items-start justify-between mb-1">
@@ -182,27 +178,9 @@ export function ScreenCard({
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <Button variant="ghost" size="icon" className="h-7 w-7 -mr-2">
-                  <Menu className="h-5 w-5 text-gray-600" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={onPreview}>
-                  Aperçu
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onEdit}>
-                  Modifier
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onDelete} className="text-red-600">
-                  Supprimer
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
 
-          <div className="text-[8px] text-gray-500 font-medium mb-6 -mt-3 ml-[18px]  pb-4 border-b border-gray-200">
+          <div className="text-[8px] text-gray-500 font-medium mb-6 -mt-3 ml-[18px] pb-4 border-b border-gray-200">
             {getDeviceTypeLabel(screen.device_type)}
           </div>
 
@@ -229,34 +207,10 @@ export function ScreenCard({
             <div className="w-24 h-1 bg-gray-600" />
           </div>
 
-          {/* Action buttons */}
-          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1 h-9 rounded-lg border-gray-200 text-xs font-medium hover:bg-gray-50"
-              onClick={onPreview}
-            >
-              <Eye className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
-              Aperçu
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1 h-9 rounded-lg border-gray-200 text-xs font-medium hover:bg-gray-50"
-              onClick={onEdit}
-            >
-              <Pencil className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
-              Modifier
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-9 w-9 p-0 rounded-lg border-gray-200 hover:bg-red-50 hover:border-red-200 hover:text-red-600"
-              onClick={onDelete}
-            >
-              <Trash2 className="h-3.5 w-3.5 text-gray-500 hover:text-red-600" />
-            </Button>
+          {/* Hover overlay with blur effect */}
+          <div className="absolute inset-0 bg-white/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center rounded-2xl">
+            <Settings className="h-12 w-12 text-gray-700 mb-2" />
+            <span className="text-sm font-medium text-gray-700">Modifier</span>
           </div>
         </div>
       </CardContent>
