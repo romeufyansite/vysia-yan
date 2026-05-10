@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { ListMusic, Settings } from 'lucide-react';
+import { ListMusic, Settings, Menu, Eye, Pencil, Trash2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +15,9 @@ interface ScreenCardProps {
   screen: Screen;
   onClick: () => void;
   onStatusChange: (status: 'online' | 'offline') => void;
+  onPreview: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
 const TEMPLATE_LAYOUTS: Record<ZoneTemplate, { zones: number; className: string }> = {
@@ -129,6 +133,9 @@ export function ScreenCard({
   screen,
   onClick,
   onStatusChange,
+  onPreview,
+  onEdit,
+  onDelete,
 }: ScreenCardProps) {
   const getDeviceTypeLabel = (deviceType?: string) => {
     switch (deviceType) {
@@ -145,11 +152,18 @@ export function ScreenCard({
 
   return (
     <Card
-      className="overflow-hidden hover:shadow-lg transition-all duration-200 rounded-2xl bg-white group cursor-pointer relative"
+      className="overflow-hidden hover:shadow-lg transition-all duration-200 rounded-2xl bg-white relative"
       onClick={onClick}
     >
-      <CardContent className="p-0">
-        <div className="p-5">
+      <CardContent className="p-0 relative">
+        {/* Overlay blur - couvre toute la carte, déclenché par le body (peer) */}
+        <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 opacity-0 peer-hover/body:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center rounded-2xl pointer-events-none">
+          <Settings className="h-12 w-12 text-gray-700 mb-2" />
+          <span className="text-sm font-medium text-gray-700">Modifier</span>
+        </div>
+
+        <div className="p-5 relative z-20">
+          {/* Header - toujours accessible, au dessus du blur */}
           <div className="flex items-start justify-between mb-1">
             <div className="flex items-center gap-2">
               <DropdownMenu>
@@ -178,39 +192,56 @@ export function ScreenCard({
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+
+            {/* Menu 3 points */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                <Button variant="ghost" size="icon" className="h-7 w-7 -mr-2">
+                  <Menu className="h-5 w-5 text-gray-600" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={onPreview}>
+                  Aperçu
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onEdit}>
+                  Modifier
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onDelete} className="text-red-600">
+                  Supprimer
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div className="text-[8px] text-gray-500 font-medium mb-6 -mt-3 ml-[18px] pb-4 border-b border-gray-200">
             {getDeviceTypeLabel(screen.device_type)}
           </div>
 
-          {/* Zone-based preview */}
-          <div className="relative aspect-video w-full rounded-lg mb-1 overflow-hidden flex items-center justify-center">
-            {screen.orientation === 'portrait' ? (
-              <div className="relative h-full rounded overflow-hidden" style={{ aspectRatio: '9/16' }}>
-                <ScreenZonesPreview screen={screen} />
-              </div>
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center p-1">
-                <div className="relative w-full h-full rounded overflow-hidden">
+          {/* Body - déclenche le blur overlay au hover (peer) */}
+          <div className="peer/body">
+            {/* Zone-based preview */}
+            <div className="relative aspect-video w-full rounded-lg mb-1 overflow-hidden flex items-center justify-center">
+              {screen.orientation === 'portrait' ? (
+                <div className="relative h-full rounded overflow-hidden" style={{ aspectRatio: '9/16' }}>
                   <ScreenZonesPreview screen={screen} />
                 </div>
-              </div>
-            )}
-          </div>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center p-1">
+                  <div className="relative w-full h-full rounded overflow-hidden">
+                    <ScreenZonesPreview screen={screen} />
+                  </div>
+                </div>
+              )}
+            </div>
 
-          {/* Stand */}
-          <div className="flex justify-center items-center mb-0.5">
-            <div className="w-1 h-3 bg-gray-600" />
-          </div>
-          <div className="flex justify-center items-center mb-4">
-            <div className="w-24 h-1 bg-gray-600" />
-          </div>
-
-          {/* Hover overlay with blur effect */}
-          <div className="absolute inset-0 bg-white/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center rounded-2xl">
-            <Settings className="h-12 w-12 text-gray-700 mb-2" />
-            <span className="text-sm font-medium text-gray-700">Modifier</span>
+            {/* Stand */}
+            <div className="flex justify-center items-center mb-0.5">
+              <div className="w-1 h-3 bg-gray-600" />
+            </div>
+            <div className="flex justify-center items-center mb-4">
+              <div className="w-24 h-1 bg-gray-600" />
+            </div>
           </div>
         </div>
       </CardContent>

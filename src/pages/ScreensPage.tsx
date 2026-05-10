@@ -282,6 +282,9 @@ export function ScreensPage() {
               screen={screen}
               onClick={() => (window.location.hash = `/screens/${screen.id}`)}
               onStatusChange={(status) => handleStatusChange(screen.id, status)}
+              onPreview={() => toast.info('Aperçu non implémenté')}
+              onEdit={() => (window.location.hash = `/screens/${screen.id}`)}
+              onDelete={canManage ? () => openDeleteDialog(screen.id) : () => denyManage()}
             />
           ))}
           {canManage && <AddScreenCard onClick={() => setConnectModalOpen(true)} />}
