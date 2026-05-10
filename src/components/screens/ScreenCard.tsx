@@ -137,6 +137,8 @@ export function ScreenCard({
   onEdit,
   onDelete,
 }: ScreenCardProps) {
+  const [isBodyHovered, setIsBodyHovered] = useState(false);
+
   const getDeviceTypeLabel = (deviceType?: string) => {
     switch (deviceType) {
       case 'connected_tv':
@@ -156,8 +158,12 @@ export function ScreenCard({
       onClick={onClick}
     >
       <CardContent className="p-0 relative">
-        {/* Overlay blur - couvre toute la carte, déclenché par le body (peer) */}
-        <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 opacity-0 peer-hover/body:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center rounded-2xl pointer-events-none">
+        {/* Overlay blur - couvre toute la carte quand la partie basse est en hover */}
+        <div
+          className={`absolute inset-0 bg-white/60 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-2xl pointer-events-none transition-opacity duration-300 ${
+            isBodyHovered ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
           <Settings className="h-12 w-12 text-gray-700 mb-2" />
           <span className="text-sm font-medium text-gray-700">Modifier</span>
         </div>
@@ -218,8 +224,11 @@ export function ScreenCard({
             {getDeviceTypeLabel(screen.device_type)}
           </div>
 
-          {/* Body - déclenche le blur overlay au hover (peer) */}
-          <div className="peer/body">
+          {/* Body - déclenche le blur overlay au hover */}
+          <div
+            onMouseEnter={() => setIsBodyHovered(true)}
+            onMouseLeave={() => setIsBodyHovered(false)}
+          >
             {/* Zone-based preview */}
             <div className="relative aspect-video w-full rounded-lg mb-1 overflow-hidden flex items-center justify-center">
               {screen.orientation === 'portrait' ? (
