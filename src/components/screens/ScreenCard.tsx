@@ -160,9 +160,10 @@ export function ScreenCard({
       <CardContent className="p-0 relative">
         {/* Overlay blur - couvre toute la carte quand la partie basse est en hover */}
         <div
-          className={`absolute inset-0 bg-white/60 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-2xl pointer-events-none transition-opacity duration-300 ${
-            isBodyHovered ? 'opacity-100' : 'opacity-0'
+          className={`absolute inset-0 bg-white/60 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-2xl transition-opacity duration-300 cursor-pointer ${
+            isBodyHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
+          onClick={onClick}
         >
           <Settings className="h-12 w-12 text-gray-700 mb-2" />
           <span className="text-sm font-medium text-gray-700">Modifier</span>
@@ -226,8 +227,10 @@ export function ScreenCard({
 
           {/* Body - déclenche le blur overlay au hover */}
           <div
+            className="relative cursor-pointer"
             onMouseEnter={() => setIsBodyHovered(true)}
             onMouseLeave={() => setIsBodyHovered(false)}
+            style={{ minHeight: '100px' }}
           >
             {/* Zone-based preview */}
             <div className="relative aspect-video w-full rounded-lg mb-1 overflow-hidden flex items-center justify-center">
@@ -245,10 +248,10 @@ export function ScreenCard({
             </div>
 
             {/* Stand */}
-            <div className="flex justify-center items-center mb-0.5">
+            <div className="flex justify-center items-center mb-0.5 pointer-events-none">
               <div className="w-1 h-3 bg-gray-600" />
             </div>
-            <div className="flex justify-center items-center mb-4">
+            <div className="flex justify-center items-center mb-4 pointer-events-none">
               <div className="w-24 h-1 bg-gray-600" />
             </div>
           </div>
