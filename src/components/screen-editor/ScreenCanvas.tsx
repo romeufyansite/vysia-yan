@@ -1,26 +1,30 @@
 import { useEffect, useRef, useState } from 'react';
 import { Plus, Image as ImageIcon, Film, Images, Clapperboard, ListMusic } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { CanvasOverlay } from './CanvasOverlay';
 import { playlistService } from '@/services/playlist.service';
-import type { Zone, ZoneTemplate, Overlay, ScreenOrientation, Playlist, PlaylistItem } from '@/types';
+import { playlistGroupService } from '@/services/playlist-group.service';
+import { PlaylistSelectorModal } from './PlaylistSelectorModal';
+import type {
+  Zone,
+  ZoneTemplate,
+  ScreenOrientation,
+  Playlist,
+  PlaylistItem,
+  PlaylistGroup,
+  Overlay,
+} from '@/types';
+import { isKnownOverlayType } from '@/types';
+import { OverlayFrame } from '@/components/overlays/OverlayFrame';
 
 interface ScreenCanvasProps {
   template: ZoneTemplate;
   orientation: ScreenOrientation;
   zones: Zone[];
-  overlays: Overlay[];
   playlists: Playlist[];
+  overlays?: Overlay[];
+  onOverlayPositionChange?: (id: string, x: number, y: number) => void;
   onAssignPlaylist?: (zoneIndex: number, playlistId: string | null) => void;
-  onOverlayMove: (overlayId: string, x: number, y: number) => void;
+  onAddPlaylist?: () => void;
 }
 
 const TEMPLATE_LAYOUTS: Record<ZoneTemplate, { zones: number; className: string }> = {
@@ -37,19 +41,57 @@ export function ScreenCanvas({
   template,
   orientation,
   zones,
-  overlays,
   playlists,
+  overlays = [],
+  onOverlayPositionChange,
   onAssignPlaylist,
-  onOverlayMove,
+  onAddPlaylist,
 }: ScreenCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const [playlistGroups, setPlaylistGroups] = useState<PlaylistGroup[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeZoneIndex, setActiveZoneIndex] = useState<number | null>(null);
+  const [activeZoneLabel, setActiveZoneLabel] = useState<string>('');
+
   const layout = TEMPLATE_LAYOUTS[template];
   const base = orientation === 'portrait' ? BASE_PORTRAIT : BASE_LANDSCAPE;
   const screenOrientation = orientation || 'landscape';
+  const enabledOverlays = overlays.filter((o) => o.enabled && isKnownOverlayType(o.type));
   const compatiblePlaylists = playlists.filter(
     (p) => (p.orientation || 'landscape') === screenOrientation
   );
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const groups = await playlistGroupService.getAll();
+        setPlaylistGroups(groups);
+      } catch {
+        setPlaylistGroups([]);
+      }
+    };
+    fetchGroups();
+  }, []);
+
+  const handleOpenModal = (zoneIndex: number, zoneLabel: string) => {
+    setActiveZoneIndex(zoneIndex);
+    setActiveZoneLabel(zoneLabel);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setActiveZoneIndex(null);
+    setActiveZoneLabel('');
+  };
+
+  const handleSelectPlaylist = (playlistId: string | null) => {
+    if (activeZoneIndex !== null && onAssignPlaylist) {
+      onAssignPlaylist(activeZoneIndex, playlistId);
+    }
+  };
 
   useEffect(() => {
     const updateScale = () => {
@@ -74,51 +116,68 @@ export function ScreenCanvas({
   }, [base.width, base.height]);
 
   return (
-    <div
-      ref={containerRef}
-      className="flex-1 flex items-center justify-center p-6 lg:p-8 bg-slate-100 min-h-0 overflow-hidden"
-    >
+    <>
       <div
-        className="relative bg-slate-900 rounded-2xl shadow-2xl ring-1 ring-slate-900/10 transition-[width,height] duration-300 ease-out"
-        style={{
-          width: base.width * scale,
-          height: base.height * scale,
-        }}
+        ref={containerRef}
+        className="flex-1 flex items-center justify-center p-6 lg:p-8 bg-slate-100 min-h-0 overflow-hidden"
       >
         <div
-          className={`h-full w-full ${
-            template === 'banner' ? 'grid grid-rows-[80%_20%]' : 'grid'
-          } ${layout.className} gap-0 overflow-hidden rounded-2xl`}
+          ref={stageRef}
+          className="relative bg-slate-900 rounded-2xl shadow-2xl ring-1 ring-slate-900/10 transition-[width,height] duration-300 ease-out"
+          style={{
+            width: base.width * scale,
+            height: base.height * scale,
+          }}
         >
-          {Array.from({ length: layout.zones }).map((_, index) => {
-            const zone = zones[index];
-            return (
-              <ZoneSlot
-                key={`${zone?.id ?? 'empty'}-${index}`}
-                zone={zone}
-                zoneLabel={`Zone ${String.fromCharCode(65 + index)}`}
-                playlists={compatiblePlaylists}
-                canAssign={typeof onAssignPlaylist === 'function'}
-                onPickPlaylist={(id) => onAssignPlaylist?.(index, id)}
-                clearLabel="Retirer la playlist"
-              />
-            );
-          })}
-        </div>
+          <div className="absolute inset-0 overflow-hidden rounded-2xl">
+            <div
+              className={`h-full w-full ${
+                template === 'banner' ? 'grid grid-rows-[80%_20%]' : 'grid'
+              } ${layout.className} gap-0`}
+            >
+              {Array.from({ length: layout.zones }).map((_, index) => {
+                const zone = zones[index];
+                const zoneLabel = `Zone ${String.fromCharCode(65 + index)}`;
+                return (
+                  <ZoneSlot
+                    key={`${zone?.id ?? 'empty'}-${index}`}
+                    zone={zone}
+                    zoneLabel={zoneLabel}
+                    playlists={compatiblePlaylists}
+                    canAssign={typeof onAssignPlaylist === 'function'}
+                    onOpenModal={() => handleOpenModal(index, zoneLabel)}
+                  />
+                );
+              })}
+            </div>
+          </div>
 
-        <div className="absolute inset-0 pointer-events-none">
-          {overlays
-            .filter((overlay) => overlay.enabled)
-            .map((overlay) => (
-              <CanvasOverlay
+          <div className="pointer-events-none absolute inset-0 z-20">
+            {enabledOverlays.map((overlay, index) => (
+              <OverlayFrame
                 key={overlay.id}
                 overlay={overlay}
-                onMove={(x, y) => onOverlayMove(overlay.id, x, y)}
+                zIndex={31 + index}
+                draggable={!!onOverlayPositionChange}
+                stageRef={stageRef}
+                onDragPosition={onOverlayPositionChange}
               />
             ))}
+          </div>
         </div>
       </div>
-    </div>
+
+      <PlaylistSelectorModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        zoneLabel={activeZoneLabel}
+        playlists={compatiblePlaylists}
+        playlistGroups={playlistGroups}
+        onSelectPlaylist={handleSelectPlaylist}
+        currentPlaylistId={activeZoneIndex !== null ? zones[activeZoneIndex]?.playlist_id : undefined}
+        onAddPlaylist={onAddPlaylist}
+      />
+    </>
   );
 }
 
@@ -182,15 +241,13 @@ function ZoneSlot({
   zoneLabel,
   playlists,
   canAssign,
-  onPickPlaylist,
-  clearLabel,
+  onOpenModal,
 }: {
   zone: Zone | undefined;
   zoneLabel: string;
   playlists: Playlist[];
   canAssign: boolean;
-  onPickPlaylist: (playlistId: string | null) => void;
-  clearLabel: string;
+  onOpenModal: () => void;
 }) {
   const playlistId = zone?.playlist_id;
   const assigned = playlistId ? playlists.find((p) => p.id === playlistId) : null;
@@ -207,33 +264,14 @@ function ZoneSlot({
         <div className="text-xs font-semibold uppercase tracking-wide text-white/45 relative z-10">{zoneLabel}</div>
         <div className="text-sm font-semibold leading-tight line-clamp-2 relative z-10">{assigned.name}</div>
         {canAssign && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="mt-1 rounded-lg bg-white/10 text-white hover:bg-white/20 border-0 relative z-10"
-              >
-                Modifier
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="max-h-[min(320px,50vh)] w-72 overflow-y-auto rounded-xl">
-              <DropdownMenuLabel>Choisir une playlist</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-slate-500"
-                onClick={() => onPickPlaylist(null)}
-              >
-                {clearLabel}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {playlists.map((pl) => (
-                <DropdownMenuItem key={pl.id} onClick={() => onPickPlaylist(pl.id)}>
-                  {pl.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={onOpenModal}
+            className="mt-1 rounded-lg bg-white/10 text-white hover:bg-white/20 border-0 relative z-10"
+          >
+            Modifier
+          </Button>
         )}
       </div>
     );
@@ -265,26 +303,14 @@ function ZoneSlot({
           Assignez une playlist pour cette zone.
         </p>
         {canAssign && playlists.length > 0 && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="mt-2 rounded-lg bg-white/10 text-white hover:bg-white/20 border-0"
-              >
-                Choisir playlist
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="max-h-[min(320px,50vh)] w-72 overflow-y-auto rounded-xl">
-              <DropdownMenuLabel>Playlist</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {playlists.map((pl) => (
-                <DropdownMenuItem key={pl.id} onClick={() => onPickPlaylist(pl.id)}>
-                  {pl.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={onOpenModal}
+            className="mt-2 rounded-lg bg-white/10 text-white hover:bg-white/20 border-0"
+          >
+            Choisir playlist
+          </Button>
         )}
       </div>
     );
@@ -303,33 +329,15 @@ function ZoneSlot({
 
   return (
     <div className="relative flex flex-col items-center justify-center gap-3 border border-slate-800 bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-16 w-16 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all hover:scale-105"
-          >
-            <Plus className="h-8 w-8" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="center" className="max-h-[min(360px,55vh)] w-72 overflow-y-auto rounded-xl">
-          <DropdownMenuLabel>Playlist pour {zoneLabel}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {playlists.length === 0 ? (
-            <div className="px-2 py-4 text-center text-sm text-muted-foreground">
-              Aucune playlist compatible avec l’orientation de l’écran.
-            </div>
-          ) : (
-            playlists.map((pl) => (
-              <DropdownMenuItem key={pl.id} onClick={() => onPickPlaylist(pl.id)}>
-                <ListMusic className="mr-2 h-4 w-4" />
-                {pl.name}
-              </DropdownMenuItem>
-            ))
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={onOpenModal}
+        disabled={!canAssign}
+        className="h-16 w-16 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <Plus className="h-8 w-8" />
+      </Button>
       <span className="text-[10px] font-semibold uppercase tracking-wide text-white/35">
         {zoneLabel}
       </span>

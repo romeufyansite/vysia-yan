@@ -96,10 +96,10 @@ export function PlaylistSettingsDialog({
       setGroupId(group.id);
       setCreatingGroup(false);
       setNewGroupName('');
-      toast.success('Groupe créé');
+      toast.success('Catégorie créée');
     } catch (error) {
       console.error('Error creating group:', error);
-      toast.error('Erreur lors de la création du groupe');
+      toast.error('Erreur lors de la création de la Catégorie');
     } finally {
       setSavingGroup(false);
     }
@@ -122,7 +122,7 @@ export function PlaylistSettingsDialog({
             Paramètres de la playlist
           </DialogTitle>
           <DialogDescription className="text-sm text-slate-500">
-            Nommez votre playlist, choisissez son orientation et assignez-la à un groupe.
+            Nommez votre playlist, choisissez son orientation et assignez-la à une Catégorie.
           </DialogDescription>
         </DialogHeader>
 
@@ -198,7 +198,7 @@ export function PlaylistSettingsDialog({
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-slate-700">Groupe</Label>
+            <Label className="text-sm font-medium text-slate-700">Catégorie</Label>
 
             {creatingGroup ? (
               <div className="flex items-center gap-2">
@@ -211,7 +211,7 @@ export function PlaylistSettingsDialog({
                       handleCreateGroup();
                     }
                   }}
-                  placeholder="Nom du groupe"
+                  placeholder="Nom de la Catégorie"
                   autoFocus
                   className="h-11 rounded-xl border-slate-200"
                 />
@@ -246,7 +246,7 @@ export function PlaylistSettingsDialog({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={NO_GROUP_VALUE}>
-                    <span className="text-slate-500">Aucun groupe</span>
+                    <span className="text-slate-500">Aucune Catégorie</span>
                   </SelectItem>
                   {groups.map((group) => (
                     <SelectItem key={group.id} value={group.id}>
@@ -256,7 +256,7 @@ export function PlaylistSettingsDialog({
                   <SelectItem value={NEW_GROUP_VALUE}>
                     <span className="flex items-center gap-2 text-slate-900 font-medium">
                       <FolderPlus className="h-4 w-4" />
-                      Créer un groupe
+                      Créer une Catégorie
                     </span>
                   </SelectItem>
                 </SelectContent>

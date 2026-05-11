@@ -1,34 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { deviceStorage } from '@/lib/device-storage';
 import { Monitor, Maximize } from 'lucide-react';
-import { PlayerOverlay } from '@/components/player/PlayerOverlay';
+import { OverlayFrame } from '@/components/overlays/OverlayFrame';
+import type { Overlay, ScreenOrientation, ZoneTemplate } from '@/types';
+import { isKnownOverlayType } from '@/types';
+
+const BASE_LANDSCAPE = { width: 1280, height: 720 };
+const BASE_PORTRAIT = { width: 720, height: 1280 };
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
 interface PlaylistItem {
   id: string;
   app_type: string;
-  config: any;
+  config: {
+    imageUrl?: string;
+    videoUrl?: string;
+    url?: string;
+    websiteUrl?: string;
+  };
   duration: number;
   order_index: number;
-}
-
-interface OverlayData {
-  id: string;
-  type: 'clock' | 'weather' | 'announcement' | 'logo';
-  enabled: boolean;
-  position: { x: number; y: number };
-  config?: any;
 }
 
 interface ScreenConfig {
   id: string;
   name: string;
   status: string;
-  orientation?: 'landscape' | 'portrait';
-  template?: 'fullscreen' | '70-30' | '30-70' | 'banner';
+  orientation?: ScreenOrientation;
+  template?: ZoneTemplate;
   zones?: unknown[];
-  overlays?: OverlayData[];
+  overlays?: Overlay[];
 }
 
 interface ZoneFeed {
@@ -118,6 +120,8 @@ export function PlayerRunPage() {
   const [sceneData, setSceneData] = useState<SceneData | null>(null);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const stageWrapperRef = useRef<HTMLDivElement>(null);
+  const [stageScale, setStageScale] = useState(1);
 
   useEffect(() => {
     if (!deviceStorage.isDeviceConnected()) {
@@ -203,6 +207,30 @@ export function PlayerRunPage() {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
+  const orientation = sceneData?.screen?.orientation || 'landscape';
+  const stageVisualW = orientation === 'portrait' ? BASE_PORTRAIT.height : BASE_LANDSCAPE.width;
+  const stageVisualH = orientation === 'portrait' ? BASE_PORTRAIT.width : BASE_LANDSCAPE.height;
+
+  useEffect(() => {
+    const update = () => {
+      const el = stageWrapperRef.current;
+      if (!el) return;
+      const next = Math.min(el.clientWidth / stageVisualW, el.clientHeight / stageVisualH);
+      setStageScale(Number.isFinite(next) && next > 0 ? next : 1);
+    };
+
+    update();
+    const el = stageWrapperRef.current;
+    const observer = el ? new ResizeObserver(update) : null;
+    if (el) observer?.observe(el);
+    window.addEventListener('resize', update);
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, [stageVisualW, stageVisualH, sceneData?.screen?.id]);
+
   const toggleFullscreen = async () => {
     if (!document.fullscreenElement) {
       await document.documentElement.requestFullscreen();
@@ -265,24 +293,13 @@ export function PlayerRunPage() {
   }
 
   const screen = sceneData.screen;
-  const orientation = screen?.orientation || 'landscape';
-  const overlays = (screen?.overlays || []).filter((o) => o.enabled);
   const screenName = screen?.name || 'Écran connecté';
 
-  const rotationStyle: React.CSSProperties =
+  const stageBase = orientation === 'portrait' ? BASE_PORTRAIT : BASE_LANDSCAPE;
+  const stageTransform =
     orientation === 'portrait'
-      ? {
-          transform: 'rotate(-90deg)',
-          transformOrigin: 'center center',
-          width: '100vh',
-          height: '100vw',
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          marginTop: '-50vw',
-          marginLeft: '-50vh',
-        }
-      : { width: '100%', height: '100%' };
+      ? `rotate(-90deg) scale(${stageScale})`
+      : `scale(${stageScale})`;
 
   if (sceneData.isOffline) {
     return (
@@ -350,14 +367,25 @@ export function PlayerRunPage() {
   };
 
   return (
-    <div className="h-screen w-full bg-black overflow-hidden fixed inset-0">
-      <div style={rotationStyle} className="relative">
+    <div
+      ref={stageWrapperRef}
+      className="h-screen w-full bg-black overflow-hidden fixed inset-0 flex items-center justify-center"
+    >
+      <div
+        className="relative"
+        style={{
+          width: stageBase.width,
+          height: stageBase.height,
+          transform: stageTransform,
+          transformOrigin: 'center center',
+        }}
+      >
         {renderScene()}
-        <div className="absolute inset-0 pointer-events-none">
-          {overlays.map((overlay) => (
-            <PlayerOverlay key={overlay.id} overlay={overlay} />
+        {(screen?.overlays ?? [])
+          .filter((o) => o.enabled && isKnownOverlayType(o.type))
+          .map((overlay, index) => (
+            <OverlayFrame key={overlay.id} overlay={overlay} zIndex={40 + index} />
           ))}
-        </div>
       </div>
 
       <button

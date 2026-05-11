@@ -37,11 +37,16 @@ export function getZoneDescriptors(template: ZoneTemplate | undefined): ZoneDesc
   }
 }
 
-/** Colonne legacy `playlist_id` : reflète zone A si définie, sinon la valeur existante en base. */
+/** Colonne legacy `playlist_id`.
+ * Dès que le tableau `zones` est renseigné (éditeur / modèle à zones),
+ * cette colonne doit suivre uniquement la zone A : ne pas réutiliser une ancienne
+ * valeur de `playlist_id` quand la zone A est vidée — sinon la base garde une affectation fantôme.
+ * Si aucune entrée dans `zones` (écrans historiques sans JSON zones), la colonne sert encore de source. */
 export function deriveScreenPlaylistId(screen: Pick<Screen, 'template' | 'zones' | 'playlist_id'>): string | null {
-  const first = screen.zones?.[0];
-  const fromZone = first?.playlist_id ?? null;
-  if (fromZone) return fromZone;
+  const zones = screen.zones ?? [];
+  if (zones.length > 0) {
+    return zones[0]?.playlist_id ?? null;
+  }
   return screen.playlist_id ?? null;
 }
 

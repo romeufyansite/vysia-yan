@@ -1,7 +1,18 @@
 import { supabase } from '@/lib/supabase';
+import type { ScreenPlaylistUsageRow } from '@/lib/playlist-screen-usage';
 import type { Screen } from '@/types';
 
 export const screenService = {
+  /** Écrans minimal pour savoir quelles playlists sont affectées (legacy + zones). */
+  async getPlaylistUsageSnapshot(): Promise<ScreenPlaylistUsageRow[]> {
+    const { data, error } = await supabase
+      .from('screens')
+      .select('id, name, playlist_id, zones');
+
+    if (error) throw error;
+    return (data ?? []) as ScreenPlaylistUsageRow[];
+  },
+
   async getAll() {
     const { data, error } = await supabase
       .from('screens')

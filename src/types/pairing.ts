@@ -26,6 +26,8 @@ export interface PairingClaimRequest {
   screenName: string;
   playlistId?: string;
   groupId?: string;
+  /** Paysage ou portrait — enregistré sur l'écran à la création */
+  orientation?: 'landscape' | 'portrait';
   orgId?: string;
 }
 

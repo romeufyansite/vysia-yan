@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Eye, MoveVertical as MoreVertical, Save, Loader as Loader2 } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { ChevronLeft, Eye, Save, Loader2, Trash2 } from 'lucide-react';
 import { ScreenCanvas } from '@/components/screen-editor/ScreenCanvas';
 import { ScreenSettings } from '@/components/screen-editor/ScreenSettings';
+import { ScreenPreviewModal } from '@/components/screens/ScreenPreviewModal';
+import { DeleteScreenDialog } from '@/components/screens/DeleteScreenDialog';
 import { screenService } from '@/services/screen.service';
 import { playlistService } from '@/services/playlist.service';
 import type { Screen, Playlist } from '@/types';
+import { isKnownOverlayType } from '@/types';
 import { deriveScreenPlaylistId, normalizeZoneAssignments } from '@/lib/screen-zones';
+import { clampOverlayPercent } from '@/lib/overlay-position';
 import { toast } from 'sonner';
 import { useMembership } from '@/contexts/MembershipContext';
 
@@ -25,9 +23,10 @@ export function ScreenEditorPage({ screenId }: ScreenEditorPageProps) {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { can } = useMembership();
   const canManage = can('screens', 'manage');
-  const denyManage = () => toast.error("Vous n'avez pas les droits pour gérer cet écran.");
 
   useEffect(() => {
     loadData();
@@ -41,7 +40,10 @@ export function ScreenEditorPage({ screenId }: ScreenEditorPageProps) {
         playlistService.getAll(),
       ]);
       if (screenData) {
-        setScreen(screenData);
+        setScreen({
+          ...screenData,
+          overlays: (screenData.overlays ?? []).filter((o) => isKnownOverlayType(o.type)),
+        });
       }
       setPlaylists(playlistsData);
     } catch (error) {
@@ -64,10 +66,12 @@ export function ScreenEditorPage({ screenId }: ScreenEditorPageProps) {
       setSaving(true);
       const payload = {
         ...screen,
+        overlays: (screen.overlays ?? []).filter((o) => isKnownOverlayType(o.type)),
         playlist_id: deriveScreenPlaylistId(screen),
       };
       await screenService.update(screenId, payload);
       toast.success('Écran mis à jour');
+      window.location.hash = '/screens';
     } catch (error) {
       console.error('Error saving screen:', error);
       toast.error('Erreur lors de la sauvegarde');
@@ -92,21 +96,30 @@ export function ScreenEditorPage({ screenId }: ScreenEditorPageProps) {
     toast.success(playlistId ? 'Playlist assignée à la zone' : 'Playlist retirée');
   };
 
-  const handleOverlayMove = (overlayId: string, x: number, y: number) => {
+  const handleAddPlaylist = () => {
+    window.location.hash = '/playlists?create=true';
+  };
+
+  const handleOverlayPositionChange = (id: string, x: number, y: number) => {
     if (!screen) return;
-
-    const overlays = (screen.overlays || []).map((overlay) =>
-      overlay.id === overlayId ? { ...overlay, position: { x, y } } : overlay
+    const nx = Math.round(clampOverlayPercent(x) * 10) / 10;
+    const ny = Math.round(clampOverlayPercent(y) * 10) / 10;
+    const overlays = (screen.overlays || []).map((o) =>
+      o.id === id
+        ? {
+            ...o,
+            position: { x: nx, y: ny },
+            config: { ...o.config, positionAnchor: 'center' as const },
+          }
+        : o
     );
-
     handleUpdate({ overlays });
   };
 
-  const handleDelete = async () => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cet écran ?')) return;
-
+  const handleConfirmDelete = async () => {
     try {
       await screenService.delete(screenId);
+      setDeleteDialogOpen(false);
       toast.success('Écran supprimé');
       window.location.hash = '/screens';
     } catch (error) {
@@ -157,7 +170,7 @@ export function ScreenEditorPage({ screenId }: ScreenEditorPageProps) {
           <Button
             variant="outline"
             className="rounded-xl h-10 border-slate-200 hidden sm:inline-flex"
-            onClick={() => toast.info('Aperçu à venir')}
+            onClick={() => setPreviewOpen(true)}
           >
             <Eye className="h-4 w-4 mr-2" />
             Aperçu
@@ -177,24 +190,15 @@ export function ScreenEditorPage({ screenId }: ScreenEditorPageProps) {
                 <span className="hidden sm:inline">Enregistrer</span>
                 <span className="sm:hidden">Save</span>
               </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon" className="rounded-xl h-10 w-10 border-slate-200">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="rounded-xl">
-                  <DropdownMenuItem onClick={() => toast.info('Révocation à venir')}>
-                    Révoquer appairage
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => toast.info('Duplication à venir')}>
-                    Dupliquer
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleDelete} className="text-red-600 focus:text-red-600">
-                    Supprimer
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-xl h-10 w-10 border-slate-200 text-red-600 hover:text-red-700 hover:bg-red-50"
+                onClick={() => setDeleteDialogOpen(true)}
+                aria-label="Supprimer l'écran"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </>
           )}
         </div>
@@ -205,10 +209,11 @@ export function ScreenEditorPage({ screenId }: ScreenEditorPageProps) {
           template={screen.template || 'fullscreen'}
           orientation={screen.orientation || 'landscape'}
           zones={screen.zones || []}
-          overlays={screen.overlays || []}
           playlists={playlists}
+          overlays={screen.overlays}
+          onOverlayPositionChange={canManage ? handleOverlayPositionChange : undefined}
           onAssignPlaylist={canManage ? handleAssignPlaylistToZone : undefined}
-          onOverlayMove={canManage ? handleOverlayMove : () => denyManage()}
+          onAddPlaylist={canManage ? handleAddPlaylist : undefined}
         />
         <ScreenSettings
           screen={screen}
@@ -216,6 +221,23 @@ export function ScreenEditorPage({ screenId }: ScreenEditorPageProps) {
           onUpdate={handleUpdate}
         />
       </div>
+
+      {/* Preview Modal */}
+      {screen && (
+        <ScreenPreviewModal
+          screen={screen}
+          playlists={playlists}
+          open={previewOpen}
+          onClose={() => setPreviewOpen(false)}
+        />
+      )}
+
+      <DeleteScreenDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        screenName={screen.name}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

@@ -10,8 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Monitor, Smartphone, LayoutGrid, LayoutPanelLeft, LayoutPanelTop, Clock, Image as ImageIcon, CloudSun, Megaphone, Settings2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Monitor, Smartphone, LayoutGrid, LayoutPanelLeft, LayoutPanelTop, Clock, Image as ImageIcon, CloudSun, Megaphone, Settings2, ChevronDown, ChevronUp, QrCode, Timer, Type } from 'lucide-react';
 import type { Screen, Playlist, ZoneTemplate, Overlay } from '@/types';
+import { isKnownOverlayType } from '@/types';
 import { OverlayConfigModal } from './OverlayConfigModal';
 import {
   deriveScreenPlaylistId,
@@ -48,40 +49,158 @@ const OVERLAY_TYPES: {
   Icon: typeof Clock;
   iconColor: string;
   iconBg: string;
+  category: 'basic' | 'engagement' | 'information';
 }[] = [
   {
     type: 'clock',
     label: 'Horloge',
-    description: 'Heure actuelle',
+    description: 'Heure et date modernes',
     Icon: Clock,
     iconColor: 'text-blue-600',
     iconBg: 'bg-blue-50',
+    category: 'basic',
   },
   {
     type: 'logo',
     label: 'Logo',
-    description: 'Image personnalisée',
+    description: 'Image personnalisée uploadée',
     Icon: ImageIcon,
     iconColor: 'text-emerald-600',
     iconBg: 'bg-emerald-50',
+    category: 'basic',
   },
   {
     type: 'weather',
     label: 'Météo',
-    description: 'Conditions et température',
+    description: 'Météo en temps réel',
     Icon: CloudSun,
     iconColor: 'text-amber-600',
     iconBg: 'bg-amber-50',
+    category: 'information',
   },
   {
     type: 'announcement',
     label: 'Annonce',
-    description: 'Message défilant',
+    description: 'Message défilant personnalisable',
     Icon: Megaphone,
     iconColor: 'text-rose-600',
     iconBg: 'bg-rose-50',
+    category: 'engagement',
+  },
+  {
+    type: 'qrcode',
+    label: 'QR Code',
+    description: 'QR Code pour promotions',
+    Icon: QrCode,
+    iconColor: 'text-violet-600',
+    iconBg: 'bg-violet-50',
+    category: 'engagement',
+  },
+  {
+    type: 'countdown',
+    label: 'Compte à rebours',
+    description: 'Timer pour événements',
+    Icon: Timer,
+    iconColor: 'text-orange-600',
+    iconBg: 'bg-orange-50',
+    category: 'engagement',
+  },
+  {
+    type: 'ticker',
+    label: 'Ticker',
+    description: 'Défilement multiple messages',
+    Icon: Type,
+    iconColor: 'text-indigo-600',
+    iconBg: 'bg-indigo-50',
+    category: 'engagement',
   },
 ];
+
+function getDefaultOverlayConfig(type: Overlay['type']): Overlay['config'] {
+  switch (type) {
+    case 'clock':
+      return {
+        style: 'modern',
+        showDate: true,
+        showSeconds: false,
+        fontSize: 'medium',
+        backgroundColor: 'rgba(15,23,42,0.78)',
+        textColor: '#ffffff',
+      };
+    case 'weather':
+      return {
+        city: 'Paris',
+        unit: 'celsius',
+        style: 'modern',
+        fontSize: 'medium',
+        backgroundColor: 'rgba(15,23,42,0.78)',
+        textColor: '#ffffff',
+      };
+    case 'announcement':
+      return {
+        text: 'Votre annonce ici',
+        scrollBehavior: 'scroll',
+        scrollDirection: 'left',
+        scrollSpeed: 'normal',
+        fontSize: 'medium',
+        backgroundColor: 'rgba(244,63,94,0.92)',
+        textColor: '#ffffff',
+      };
+    case 'logo':
+      return {
+        fontSize: 'medium',
+        backgroundColor: 'transparent',
+        logoBackgroundMode: 'transparent',
+        textColor: '#0f172a',
+      };
+    case 'qrcode':
+      return {
+        qrContent: 'https://vysia.app',
+        qrSize: 'medium',
+        qrColor: '#000000',
+        qrBgColor: '#ffffff',
+        backgroundColor: 'rgba(255,255,255,0.95)',
+      };
+    case 'countdown':
+      return {
+        targetDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
+        countdownLabel: 'Événement dans',
+        countdownStyle: 'boxes',
+        showDays: true,
+        showHours: true,
+        showMinutes: true,
+        showSeconds_countdown: true,
+        backgroundColor: 'rgba(15,23,42,0.78)',
+        textColor: '#ffffff',
+      };
+    case 'ticker':
+      return {
+        tickerItems: ['Information importante', 'Nouvelle offre disponible'],
+        tickerSeparator: ' • ',
+        scrollSpeed: 'normal',
+        backgroundColor: 'rgba(15,23,42,0.85)',
+        textColor: '#ffffff',
+      };
+  }
+}
+
+function getDefaultOverlayPosition(type: Overlay['type']): Overlay['position'] {
+  switch (type) {
+    case 'logo':
+      return { x: 12, y: 12 };
+    case 'clock':
+      return { x: 16, y: 14 };
+    case 'weather':
+      return { x: 82, y: 14 };
+    case 'announcement':
+    case 'ticker':
+      return { x: 50, y: 88 };
+    case 'qrcode':
+      return { x: 88, y: 72 };
+    case 'countdown':
+      return { x: 50, y: 14 };
+  }
+}
 
 export function ScreenSettings({ screen, playlists, onUpdate }: ScreenSettingsProps) {
   const [configOverlay, setConfigOverlay] = useState<Overlay | null>(null);
@@ -115,8 +234,8 @@ export function ScreenSettings({ screen, playlists, onUpdate }: ScreenSettingsPr
         id: `overlay-${Date.now()}`,
         type,
         enabled,
-        position: { x: 10, y: 10 },
-        config: {},
+        position: getDefaultOverlayPosition(type),
+        config: { ...getDefaultOverlayConfig(type), positionAnchor: 'center' },
       });
     }
 
@@ -131,7 +250,9 @@ export function ScreenSettings({ screen, playlists, onUpdate }: ScreenSettingsPr
     setConfigOverlay(null);
   };
 
-  const activeOverlaysCount = (screen.overlays || []).filter((o) => o.enabled).length;
+  const activeOverlaysCount = (screen.overlays || []).filter(
+    (o) => o.enabled && isKnownOverlayType(o.type)
+  ).length;
 
   return (
     <aside className="w-full lg:w-[380px] xl:w-[420px] h-full bg-white border-l border-slate-200 overflow-y-auto flex-shrink-0">
@@ -312,6 +433,12 @@ export function ScreenSettings({ screen, playlists, onUpdate }: ScreenSettingsPr
               <ChevronDown className="h-4 w-4 text-slate-400" />
             )}
           </button>
+
+          {overlaysExpanded && (
+            <p className="text-xs text-slate-500 -mt-1">
+              Sur l&apos;aperçu à gauche, faites glisser l&apos;overlay pour le positionner (clic maintenu sur le visuel) ; la position est sauvegardée en proportion de l&apos;écran.
+            </p>
+          )}
 
           {overlaysExpanded && (
             <div className="space-y-2">

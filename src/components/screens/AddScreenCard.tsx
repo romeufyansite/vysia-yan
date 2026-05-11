@@ -21,10 +21,10 @@ export function AddScreenCard({ onClick }: AddScreenCardProps) {
           <div className="relative mt-1 aspect-video w-full overflow-hidden rounded-lg">
             <div className="absolute inset-0 flex items-center justify-center px-px py-0">
               <div className="flex flex-col items-center justify-center gap-0 transition-[gap] duration-300 ease-out group-hover:gap-2">
-                <Plus
-                  className="h-20 w-20 shrink-0 text-slate-300 transition-transform duration-300 group-hover:scale-110 group-hover:text-slate-500"
-                  strokeWidth={1.25}
-                />
+              <Plus
+  className="h-20 w-20 shrink-0 translate-y-2 text-slate-300 transition-transform duration-300 group-hover:translate-y-0 group-hover:scale-110 group-hover:text-slate-500"
+  strokeWidth={1.25}
+/>
                 <span className="max-h-0 overflow-hidden text-center opacity-0 transition-all duration-300 ease-out group-hover:max-h-16 group-hover:opacity-100">
                   <span className="inline-block rounded-lg bg-slate-200/70 px-3 py-1 text-sm font-medium text-slate-700 whitespace-nowrap">
                     Ajouter un écran

@@ -45,7 +45,8 @@ Deno.serve(async (req: Request) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { code, screenName, playlistId, groupId, orgId: requestedOrgId } = await req.json();
+    const { code, screenName, playlistId, groupId, orgId: requestedOrgId, orientation } =
+      await req.json();
 
     if (!code || !screenName) {
       return new Response(
@@ -100,6 +101,9 @@ Deno.serve(async (req: Request) => {
 
     const deviceJwt = await generateDeviceJWT(pairingToken.device_id, '', orgId);
 
+    const screenOrientation =
+      orientation === 'portrait' ? 'portrait' : 'landscape';
+
     const { data: screen, error: screenError } = await supabase
       .from('screens')
       .insert({
@@ -107,6 +111,7 @@ Deno.serve(async (req: Request) => {
         name: screenName,
         playlist_id: playlistId || null,
         group_id: groupId || null,
+        orientation: screenOrientation,
         status: 'online',
         device_jwt: deviceJwt,
         last_seen_at: new Date().toISOString(),

@@ -1,16 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus, FolderPlus, Folder } from 'lucide-react';
+import { Plus, Users } from 'lucide-react';
+import { buildPlaylistToScreensMap } from '@/lib/playlist-screen-usage';
 import { playlistService } from '@/services/playlist.service';
 import { playlistGroupService } from '@/services/playlist-group.service';
+import { screenService } from '@/services/screen.service';
 import type { Playlist, PlaylistGroup } from '@/types';
 import { toast } from 'sonner';
 import { PlaylistSettingsDialog } from '@/components/playlists/PlaylistSettingsDialog';
 import { DeletePlaylistDialog } from '@/components/playlists/DeletePlaylistDialog';
 import { PlaylistCard } from '@/components/playlists/PlaylistCard';
 import { AddPlaylistCard } from '@/components/playlists/AddPlaylistCard';
-import { CreateGroupDialog } from '@/components/playlists/CreateGroupDialog';
+import { ManageGroupsDialog } from '@/components/playlists/ManageGroupsDialog';
 import { PlaylistPreviewModal } from '@/components/playlists/PlaylistPreviewModal';
+import {
+  PlaylistsFiltersBar,
+  type PlaylistsOrientationFilter,
+  type PlaylistsStatusFilter,
+} from '@/components/playlists/PlaylistsFiltersBar';
 import { useMembership } from '@/contexts/MembershipContext';
 
 const UNGROUPED_KEY = '__ungrouped__';
@@ -21,12 +28,19 @@ export function PlaylistsPage() {
   const [loading, setLoading] = useState(true);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [editingPlaylist, setEditingPlaylist] = useState<Playlist | null>(null);
-  const [createGroupOpen, setCreateGroupOpen] = useState(false);
+  const [manageGroupsOpen, setManageGroupsOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [playlistToDelete, setPlaylistToDelete] = useState<Playlist | null>(null);
   const [screensUsingPlaylist, setScreensUsingPlaylist] = useState<string[]>([]);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
   const [previewPlaylist, setPreviewPlaylist] = useState<Playlist | null>(null);
+  const [playlistScreenUsage, setPlaylistScreenUsage] = useState<
+    Record<string, { id: string; name: string }[]>
+  >({});
+  const [screensList, setScreensList] = useState<{ id: string; name: string }[]>([]);
+  const [statusFilter, setStatusFilter] = useState<PlaylistsStatusFilter>('all');
+  const [orientationFilter, setOrientationFilter] = useState<PlaylistsOrientationFilter>('all');
+  const [selectedScreenIds, setSelectedScreenIds] = useState<Set<string>>(new Set());
   const { can } = useMembership();
   const canManage = can('playlists', 'manage');
 
@@ -42,12 +56,24 @@ export function PlaylistsPage() {
 
   const loadData = async () => {
     try {
-      const [playlistsData, groupsData] = await Promise.all([
+      const [playlistsData, groupsData, usageRows] = await Promise.all([
         playlistService.getAll(),
         playlistGroupService.getAll(),
+        screenService.getPlaylistUsageSnapshot(),
       ]);
       setPlaylists(playlistsData);
       setGroups(groupsData);
+      setPlaylistScreenUsage(buildPlaylistToScreensMap(usageRows));
+
+      const byScreenId = new Map<string, string>();
+      for (const row of usageRows) {
+        byScreenId.set(row.id, row.name);
+      }
+      setScreensList(
+        [...byScreenId.entries()]
+          .map(([id, name]) => ({ id, name }))
+          .sort((a, b) => a.name.localeCompare(b.name, 'fr'))
+      );
     } catch (error) {
       console.error('Error loading playlists:', error);
       toast.error('Erreur lors du chargement des playlists');
@@ -78,7 +104,7 @@ export function PlaylistsPage() {
     }
   };
 
-  const handleGroupCreated = async () => {
+  const handleGroupsUpdated = async () => {
     await loadData();
   };
 
@@ -114,7 +140,7 @@ export function PlaylistsPage() {
     if (!playlistToDelete) return;
 
     try {
-      await playlistService.delete(playlistToDelete.id);
+      await playlistService.delete(playlistToDelete.id); 
       toast.success('Playlist supprimée');
       setDeleteDialogOpen(false);
       setPlaylistToDelete(null);
@@ -133,10 +159,34 @@ export function PlaylistsPage() {
     countByGroup.set(key, (countByGroup.get(key) || 0) + 1);
   }
 
-  const filteredPlaylists =
-    activeFilters.size === 0
-      ? playlists
-      : playlists.filter((p) => activeFilters.has(p.group_id || UNGROUPED_KEY));
+  const filteredPlaylists = useMemo(() => {
+    let next = playlists;
+    if (activeFilters.size > 0) {
+      next = next.filter((p) => activeFilters.has(p.group_id || UNGROUPED_KEY));
+    }
+    if (statusFilter === 'assigned') {
+      next = next.filter((p) => (playlistScreenUsage[p.id]?.length ?? 0) > 0);
+    } else if (statusFilter === 'unassigned') {
+      next = next.filter((p) => (playlistScreenUsage[p.id]?.length ?? 0) === 0);
+    }
+    if (orientationFilter !== 'all') {
+      next = next.filter((p) => (p.orientation ?? 'landscape') === orientationFilter);
+    }
+    if (selectedScreenIds.size > 0) {
+      next = next.filter((p) => {
+        const usedOn = playlistScreenUsage[p.id] ?? [];
+        return usedOn.some((s) => selectedScreenIds.has(s.id));
+      });
+    }
+    return next;
+  }, [
+    playlists,
+    activeFilters,
+    statusFilter,
+    orientationFilter,
+    selectedScreenIds,
+    playlistScreenUsage,
+  ]);
 
   const toggleFilter = (key: string) => {
     setActiveFilters((prev) => {
@@ -149,6 +199,35 @@ export function PlaylistsPage() {
 
   const clearFilters = () => setActiveFilters(new Set());
 
+  const toggleScreenFilter = useCallback((id: string) => {
+    setSelectedScreenIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const clearScreenSelection = useCallback(() => {
+    setSelectedScreenIds(new Set());
+  }, []);
+
+  const resetAdvancedFiltersOnly = useCallback(() => {
+    setStatusFilter('all');
+    setOrientationFilter('all');
+    setSelectedScreenIds(new Set());
+  }, []);
+
+  const resetAllFilters = useCallback(() => {
+    setActiveFilters(new Set());
+    setStatusFilter('all');
+    setOrientationFilter('all');
+    setSelectedScreenIds(new Set());
+  }, []);
+
+  const advancedFiltersActive =
+    statusFilter !== 'all' || orientationFilter !== 'all' || selectedScreenIds.size > 0;
+
   const groupNameById = new Map(groups.map((g) => [g.id, g.name]));
 
   return (
@@ -160,12 +239,12 @@ export function PlaylistsPage() {
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
-                onClick={() => setCreateGroupOpen(true)}
+                onClick={() => setManageGroupsOpen(true)}
                 className="rounded-xl h-10 border-slate-200"
               >
-                <FolderPlus className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Nouveau groupe</span>
-                <span className="sm:hidden">Groupe</span>
+                <Users className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Catégories</span>
+                <span className="sm:hidden">Catégories</span>
               </Button>
               <Button
                 onClick={handleCreate}
@@ -183,58 +262,78 @@ export function PlaylistsPage() {
       <div className="p-4 sm:p-8">
         {loading ? (
           <div className="text-center py-12 text-slate-500">Chargement...</div>
-        ) : playlists.length === 0 && groups.length === 0 ? (
-          <EmptyState onCreate={canManage ? handleCreate : undefined} />
         ) : (
           <div className="space-y-6">
-            {(groups.length > 0 || ungroupedCount > 0) && (
-              <div className="flex flex-wrap items-center gap-2">
-                <FilterChip
-                  active={activeFilters.size === 0}
-                  onClick={clearFilters}
-                  label="Tous"
-                  count={playlists.length}
-                />
-                {groups.map((group) => (
-                  <FilterChip
-                    key={group.id}
-                    active={activeFilters.has(group.id)}
-                    onClick={() => toggleFilter(group.id)}
-                    label={group.name}
-                    count={countByGroup.get(group.id) || 0}
-                  />
-                ))}
-                {ungroupedCount > 0 && (
-                  <FilterChip
-                    active={activeFilters.has(UNGROUPED_KEY)}
-                    onClick={() => toggleFilter(UNGROUPED_KEY)}
-                    label="Sans groupe"
-                    count={ungroupedCount}
-                  />
-                )}
-              </div>
-            )}
+            <PlaylistsFiltersBar
+              UNGROUPED_KEY={UNGROUPED_KEY}
+              totalPlaylistCount={playlists.length}
+              groups={groups}
+              ungroupedCount={ungroupedCount}
+              countByGroup={countByGroup}
+              categoryActiveKeys={activeFilters}
+              onCategoryToggle={toggleFilter}
+              onCategoryClearAll={clearFilters}
+              status={statusFilter}
+              onStatusChange={setStatusFilter}
+              orientation={orientationFilter}
+              onOrientationChange={setOrientationFilter}
+              screens={screensList}
+              selectedScreenIds={selectedScreenIds}
+              onToggleScreen={toggleScreenFilter}
+              onClearScreenSelection={clearScreenSelection}
+              onResetAdvanced={resetAdvancedFiltersOnly}
+              showResetAdvanced={advancedFiltersActive}
+              advancedFiltersActive={advancedFiltersActive}
+            />
 
-            {filteredPlaylists.length === 0 ? (
-              <div className="py-16 text-center text-sm text-slate-500">
-                Aucune playlist dans cette sélection.
-              </div>
+            {playlists.length > 0 ? (
+              <>
+                
+
+                {filteredPlaylists.length === 0 ? (
+                  <div className="rounded-2xl border border-dashed border-slate-200 bg-gradient-to-br from-slate-50 to-white px-6 py-16 text-center shadow-sm">
+                    <p className="text-base font-medium text-slate-800">
+                      Aucune playlist ne correspond à ces critères.
+                    </p>
+                    <p className="mt-2 text-sm text-slate-500">
+                      Modifiez ou réinitialisez vos filtres pour élargir le résultat.
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="mt-6 rounded-xl border-slate-200"
+                      onClick={resetAllFilters}
+                    >
+                      Réinitialiser les filtres
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+                    {filteredPlaylists.map((playlist) => (
+                      <PlaylistCard
+                        key={playlist.id}
+                        playlist={playlist}
+                        groupName={
+                          playlist.group_id ? groupNameById.get(playlist.group_id) : undefined
+                        }
+                        assignedScreens={playlistScreenUsage[playlist.id] ?? []}
+                        onClick={() => (window.location.hash = `/playlists/${playlist.id}`)}
+                        onPreview={() => setPreviewPlaylist(playlist)}
+                        onEditSettings={canManage ? () => handleEditSettings(playlist) : undefined}
+                        onDuplicate={canManage ? () => handleDuplicate(playlist) : undefined}
+                        onDelete={canManage ? () => handleDelete(playlist) : undefined}
+                      />
+                    ))}
+                    {canManage && <AddPlaylistCard onClick={handleCreate} />}
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-                {filteredPlaylists.map((playlist) => (
-                  <PlaylistCard
-                    key={playlist.id}
-                    playlist={playlist}
-                    groupName={playlist.group_id ? groupNameById.get(playlist.group_id) : undefined}
-                    onClick={() => (window.location.hash = `/playlists/${playlist.id}`)}
-                    onPreview={() => setPreviewPlaylist(playlist)}
-                    onEditSettings={canManage ? () => handleEditSettings(playlist) : undefined}
-                    onDuplicate={canManage ? () => handleDuplicate(playlist) : undefined}
-                    onDelete={canManage ? () => handleDelete(playlist) : undefined}
-                  />
-                ))}
-                {canManage && <AddPlaylistCard onClick={handleCreate} />}
-              </div>
+              canManage && (
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+                  <AddPlaylistCard onClick={handleCreate} />
+                </div>
+              )
             )}
           </div>
         )}
@@ -255,10 +354,11 @@ export function PlaylistsPage() {
         }
       />
 
-      <CreateGroupDialog
-        open={createGroupOpen}
-        onOpenChange={setCreateGroupOpen}
-        onCreated={handleGroupCreated}
+      <ManageGroupsDialog
+        open={manageGroupsOpen}
+        onOpenChange={setManageGroupsOpen}
+        groups={groups}
+        onGroupsUpdated={handleGroupsUpdated}
       />
 
       <DeletePlaylistDialog
@@ -277,63 +377,6 @@ export function PlaylistsPage() {
           orientation={previewPlaylist.orientation ?? 'landscape'}
           onClose={() => setPreviewPlaylist(null)}
         />
-      )}
-    </div>
-  );
-}
-
-function FilterChip({
-  active,
-  onClick,
-  label,
-  count,
-}: {
-  active: boolean;
-  onClick: () => void;
-  label: string;
-  count: number;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`inline-flex items-center gap-2 h-9 rounded-full px-4 text-sm font-medium transition-all ${
-        active
-          ? 'bg-slate-900 text-white shadow-sm'
-          : 'bg-white text-slate-700 border border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-      }`}
-    >
-      <span>{label}</span>
-      <span
-        className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-semibold ${
-          active ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-600'
-        }`}
-      >
-        {count}
-      </span>
-    </button>
-  );
-}
-
-function EmptyState({ onCreate }: { onCreate?: () => void }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="h-14 w-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
-        <Folder className="h-6 w-6 text-slate-400" />
-      </div>
-      <h3 className="text-lg font-semibold text-slate-900 mb-1">
-        Aucune playlist pour le moment
-      </h3>
-      <p className="text-sm text-slate-500 max-w-md mb-6">
-        {onCreate
-          ? 'Créez votre première playlist pour diffuser du contenu sur vos écrans.'
-          : "Aucune playlist n'est disponible pour votre profil."}
-      </p>
-      {onCreate && (
-        <Button onClick={onCreate} className="rounded-xl h-10 bg-slate-900 hover:bg-slate-800">
-          <Plus className="h-4 w-4 mr-2" />
-          Nouvelle playlist
-        </Button>
       )}
     </div>
   );

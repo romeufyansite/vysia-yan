@@ -64,6 +64,16 @@ export type ScreenStatus = 'online' | 'offline';
 export type DeviceType = 'connected_tv' | 'web_browser' | 'non_connected_tv';
 export type ScreenRotation = 'normal' | '90' | '180' | '270';
 export type ZoneTemplate = 'fullscreen' | '70-30' | '30-70' | 'banner';
+export type OverlayPositionAnchor =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'center-left'
+  | 'center-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right'
+  | 'center';
 
 export interface Zone {
   id: string;
@@ -80,10 +90,28 @@ export interface Zone {
   };
 }
 
+/** Types d’overlay actuellement pris en charge (hors anciens JSON). */
+export const OVERLAY_TYPE_IDS = [
+  'clock',
+  'weather',
+  'announcement',
+  'logo',
+  'qrcode',
+  'countdown',
+  'ticker',
+] as const;
+
+export type OverlayTypeId = (typeof OVERLAY_TYPE_IDS)[number];
+
+export function isKnownOverlayType(type: string): type is OverlayTypeId {
+  return (OVERLAY_TYPE_IDS as readonly string[]).includes(type);
+}
+
 export interface Overlay {
   id: string;
-  type: 'clock' | 'weather' | 'announcement' | 'logo';
+  type: OverlayTypeId;
   enabled: boolean;
+  /** Point de référence sur le cadre logique de l’écran : x et y en % (0–100), largeur/hauteur du canevas = 100 %. L’ancrage précis (centre, coin…) est défini par `config.positionAnchor`. */
   position: {
     x: number;
     y: number;
@@ -93,6 +121,34 @@ export interface Overlay {
     unit?: 'celsius' | 'fahrenheit';
     text?: string;
     imageUrl?: string;
+    filePath?: string;
+    style?: 'modern' | 'classic' | 'minimal';
+    showSeconds?: boolean;
+    showDate?: boolean;
+    textColor?: string;
+    backgroundColor?: string;
+    fontSize?: 'small' | 'medium' | 'large';
+    scrollDirection?: 'left' | 'right' | 'up' | 'down';
+    scrollSpeed?: 'slow' | 'normal' | 'fast';
+    scrollBehavior?: 'scroll' | 'slide' | 'static';
+    qrContent?: string;
+    qrSize?: 'small' | 'medium' | 'large';
+    qrColor?: string;
+    qrBgColor?: string;
+    targetDate?: string;
+    targetTime?: string;
+    countdownLabel?: string;
+    showDays?: boolean;
+    showHours?: boolean;
+    showMinutes?: boolean;
+    showSeconds_countdown?: boolean;
+    countdownStyle?: 'compact' | 'expanded' | 'boxes';
+    tickerText?: string;
+    tickerItems?: string[];
+    tickerSeparator?: string;
+    positionAnchor?: OverlayPositionAnchor;
+    /** Logo overlay : fond derrière l’image (transparent ou couleur unie). */
+    logoBackgroundMode?: 'transparent' | 'solid';
   };
 }
 

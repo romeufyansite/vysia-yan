@@ -1,3 +1,5 @@
+import { buildPlaylistToScreensMap } from '@/lib/playlist-screen-usage';
+import { screenService } from '@/services/screen.service';
 import { supabase } from '@/lib/supabase';
 import type { Playlist, PlaylistItem } from '@/types';
 
@@ -79,13 +81,9 @@ export const playlistService = {
   },
 
   async getScreensUsingPlaylist(id: string) {
-    const { data, error } = await supabase
-      .from('screens')
-      .select('id, name')
-      .eq('playlist_id', id);
-
-    if (error) throw error;
-    return data as { id: string; name: string }[];
+    const rows = await screenService.getPlaylistUsageSnapshot();
+    const map = buildPlaylistToScreensMap(rows);
+    return map[id] ?? [];
   },
 
   async duplicate(id: string) {
