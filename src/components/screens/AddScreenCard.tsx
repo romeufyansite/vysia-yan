@@ -9,26 +9,30 @@ export function AddScreenCard({ onClick }: AddScreenCardProps) {
   return (
     <Card
       onClick={onClick}
-      className="overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer rounded-2xl bg-white group"
+      className="group cursor-pointer overflow-hidden rounded-2xl border-0 bg-slate-100 shadow-none ring-0 transition-colors hover:bg-slate-200/35"
     >
       <CardContent className="p-0">
-        <div className="p-1">
-          <div className="flex items-start justify-between mb-3">
-            <div className="h-7 w-full"></div>
+        <div className="px-1.5 pb-0 pt-2">
+          <div className="mb-1.5 flex items-start justify-between">
+            <div className="h-6 max-w-[76%]" aria-hidden />
           </div>
 
-          <div className="relative aspect-video bg-transparent rounded-lg mt-6 flex flex-col items-center justify-center gap-4">
-            <Plus className="w-24 h-24 text-gray-400 mt-12 group-hover:mt-2 transition-all duration-300 group-hover:scale-110 group-hover:text-gray-600" strokeWidth={1.5} />
-            <span className="text-gray-600 font-medium text-base bg-gray-200/30 pl-4 rounded-lg pr-4 pt-1 pb-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              Ajouter un écran
-            </span> 
-          </div> 
-
-          <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-            <span className="invisible">Playing</span>
+          {/* Zone identique aux vignettes : le bloc icône + libellé reste centré au repos comme au survol */}
+          <div className="relative mt-1 aspect-video w-full overflow-hidden rounded-lg">
+            <div className="absolute inset-0 flex items-center justify-center px-px py-0">
+              <div className="flex flex-col items-center justify-center gap-0 transition-[gap] duration-300 ease-out group-hover:gap-2">
+                <Plus
+                  className="h-20 w-20 shrink-0 text-slate-300 transition-transform duration-300 group-hover:scale-110 group-hover:text-slate-500"
+                  strokeWidth={1.25}
+                />
+                <span className="max-h-0 overflow-hidden text-center opacity-0 transition-all duration-300 ease-out group-hover:max-h-16 group-hover:opacity-100">
+                  <span className="inline-block rounded-lg bg-slate-200/70 px-3 py-1 text-sm font-medium text-slate-700 whitespace-nowrap">
+                    Ajouter un écran
+                  </span>
+                </span>
+              </div>
+            </div>
           </div>
-
-          <div className="h-9"></div>
         </div>
       </CardContent>
     </Card>

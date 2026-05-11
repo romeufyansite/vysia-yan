@@ -58,7 +58,7 @@ export function CompanyPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+        <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
       </div>
     );
   }
@@ -67,8 +67,8 @@ export function CompanyPage() {
 
   return (
     <div className="h-full">
-      <div className="border-b border-gray-200 bg-white px-8 py-5">
-        <h1 className="text-2xl font-semibold text-gray-900">Entreprises</h1>
+      <div className="border-b border-slate-200/80 bg-white px-8 py-6">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Entreprises</h1>
       </div>
 
       <div className="p-8">

@@ -68,7 +68,7 @@ export function OrganizationSwitcher({ collapsed = false }: OrganizationSwitcher
   if (loading) {
     return (
       <div
-        className={`${collapsed ? 'h-11 w-11 mx-auto' : 'h-12 w-full'} rounded-xl bg-gray-100 animate-pulse`}
+        className={`${collapsed ? 'h-11 w-11 mx-auto' : 'h-12 w-full'} animate-pulse rounded-xl bg-slate-100`}
       />
     );
   }
@@ -79,7 +79,7 @@ export function OrganizationSwitcher({ collapsed = false }: OrganizationSwitcher
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className={`w-full flex items-center gap-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors ${
+          className={`flex w-full items-center gap-2 rounded-xl border border-slate-200/80 bg-white transition-colors hover:border-slate-300 hover:bg-slate-50 ${
             collapsed ? 'h-11 w-11 justify-center p-0 mx-auto' : 'h-12 px-3'
           }`}
           title={collapsed ? activeOrg?.name : undefined}
@@ -93,10 +93,10 @@ export function OrganizationSwitcher({ collapsed = false }: OrganizationSwitcher
           </div>
           {!collapsed && (
             <>
-              <span className="flex-1 text-left text-sm font-semibold text-gray-900 truncate">
+              <span className="flex-1 truncate text-left text-sm font-semibold text-slate-900">
                 {activeOrg?.name || 'Aucune entreprise'}
               </span>
-              <ChevronsUpDown className="h-4 w-4 text-gray-400 shrink-0" />
+              <ChevronsUpDown className="h-4 w-4 shrink-0 text-slate-400" />
             </>
           )}
         </button>
@@ -106,11 +106,11 @@ export function OrganizationSwitcher({ collapsed = false }: OrganizationSwitcher
         className="w-56 rounded-xl p-1"
         sideOffset={6}
       >
-        <div className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+        <div className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">
           Entreprises
         </div>
         {orgs.length === 0 && (
-          <div className="px-2 py-2 text-xs text-gray-500">Aucune entreprise</div>
+          <div className="px-2 py-2 text-xs text-slate-500">Aucune entreprise</div>
         )}
         {orgs.map((org) => {
           const isActive = org.id === currentId;

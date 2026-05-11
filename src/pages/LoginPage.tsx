@@ -34,28 +34,28 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-slate-50 via-slate-50/90 to-white p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-black mb-4">
-            <Monitor className="w-8 h-8 text-white" />
+        <div className="mb-10 text-center">
+          <div className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 shadow-lg shadow-slate-900/20">
+            <Monitor className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Montet</h1>
-          <p className="text-gray-600">Gestion d'affichage dynamique</p>
+          <h1 className="mb-2 text-3xl font-semibold tracking-tight text-slate-900">Montet</h1>
+          <p className="text-[15px] leading-relaxed text-slate-500">Gestion d&apos;affichage dynamique</p>
         </div>
 
-        <Card className="border-0 shadow-xl rounded-3xl">
+        <Card className="rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-900/10">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-2xl font-semibold text-center">
+            <CardTitle className="text-center text-2xl font-semibold tracking-tight text-slate-900">
               Connexion
             </CardTitle>
-            <CardDescription className="text-center">
+            <CardDescription className="text-center text-[15px] text-slate-500">
               Connectez-vous à votre compte
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
+            <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2.5">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -64,11 +64,10 @@ export function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
-                  className="h-12 rounded-xl"
                   autoComplete="email"
                 />
               </div>
-              <div className="space-y-2">
+            <div className="space-y-2.5">
                 <Label htmlFor="password">Mot de passe</Label>
                 <Input
                   id="password"
@@ -77,13 +76,13 @@ export function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={loading}
-                  className="h-12 rounded-xl"
                   autoComplete="current-password"
                 />
               </div>
               <Button
                 type="submit"
-                className="w-full h-12 rounded-xl bg-black hover:bg-gray-800 text-white font-medium"
+                size="lg"
+                className="w-full rounded-xl text-base font-medium shadow-md shadow-primary/20"
                 disabled={loading}
               >
                 {loading ? (
@@ -97,11 +96,11 @@ export function LoginPage() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
+            <div className="mt-8 text-center">
               <button
                 type="button"
                 onClick={() => window.location.hash = '/forgot-password'}
-                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                className="text-sm text-slate-500 underline-offset-2 transition-colors hover:text-slate-900"
               >
                 Mot de passe oublié ?
               </button>
@@ -109,7 +108,7 @@ export function LoginPage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
+        <p className="mt-8 text-center text-sm text-slate-400">
           Montet © 2025 - Tous droits réservés
         </p>
       </div>

@@ -151,7 +151,7 @@ export function InviteTeammateDialog({
                   className={`flex items-center gap-3 px-3 py-2.5 border rounded-xl cursor-pointer transition ${
                     selectedOrgs.has(org.id)
                       ? 'border-blue-500 bg-blue-50/50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
                   <Checkbox
@@ -159,8 +159,8 @@ export function InviteTeammateDialog({
                     onCheckedChange={(c) => toggleOrg(org.id, !!c)}
                   />
                   <div className="flex items-center gap-2 min-w-0">
-                    <Building2 className="h-4 w-4 text-gray-400 shrink-0" />
-                    <span className="text-sm font-medium text-gray-900 truncate">{org.name}</span>
+                    <Building2 className="h-4 w-4 shrink-0 text-slate-400" />
+                    <span className="truncate text-sm font-medium text-slate-900">{org.name}</span>
                   </div>
                 </label>
               ))}
@@ -171,7 +171,7 @@ export function InviteTeammateDialog({
             <div className="space-y-3">
               <Label>Droits par entreprise</Label>
               {selectedOrgs.size > 1 && (
-                <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2">
+                <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
                   {Array.from(selectedOrgs).map((orgId) => {
                     const org = managerOrgs.find((o) => o.id === orgId);
                     const active = activeTab === orgId;
@@ -181,7 +181,7 @@ export function InviteTeammateDialog({
                         type="button"
                         onClick={() => setActiveTab(orgId)}
                         className={`text-xs font-medium px-3 py-1.5 rounded-lg transition ${
-                          active ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          active ? 'bg-primary text-primary-foreground shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                         }`}
                       >
                         {org?.name ?? orgId}
@@ -196,7 +196,7 @@ export function InviteTeammateDialog({
                   onChange={(p) => setPermsByOrg({ ...permsByOrg, [activeTab]: p })}
                 />
               )}
-              <p className="text-xs text-gray-500">« Gérer » inclut automatiquement « Voir ».</p>
+              <p className="text-xs text-slate-500">« Gérer » inclut automatiquement « Voir ».</p>
             </div>
           )}
         </div>

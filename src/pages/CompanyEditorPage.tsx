@@ -74,7 +74,7 @@ export function CompanyEditorPage({ orgId }: CompanyEditorPageProps) {
   if (!organization) {
     return (
       <div className="py-10 px-4 sm:px-6 max-w-3xl mx-auto">
-        <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center">
+        <div className="rounded-2xl border border-slate-200/70 bg-white p-10 text-center shadow-[0_1px_3px_rgba(15,23,42,0.04)] ring-1 ring-slate-900/[0.02]">
           <Building2 className="h-10 w-10 text-gray-300 mx-auto mb-3" />
           <p className="text-gray-600 font-medium">Entreprise introuvable</p>
         </div>
@@ -92,7 +92,7 @@ export function CompanyEditorPage({ orgId }: CompanyEditorPageProps) {
           <ArrowLeft className="h-4 w-4" />
           Retour aux entreprises
         </button>
-        <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center">
+        <div className="rounded-2xl border border-slate-200/70 bg-white p-10 text-center shadow-[0_1px_3px_rgba(15,23,42,0.04)] ring-1 ring-slate-900/[0.02]">
           <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-4">
             <Lock className="h-6 w-6 text-gray-400" />
           </div>
@@ -109,19 +109,19 @@ export function CompanyEditorPage({ orgId }: CompanyEditorPageProps) {
   const activeTabMeta = TABS.find((t) => t.id === activeTab)!;
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-50/95 to-white py-8 px-4 sm:px-6">
       {/* Page header */}
       <div className="mb-8 max-w-6xl mx-auto">
         <button
           onClick={() => (window.location.hash = '/settings/entreprise')}
-          className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors mb-3"
+          className="mb-4 inline-flex items-center gap-1.5 rounded-lg px-1 py-1 text-sm text-slate-500 transition-colors hover:bg-white/80 hover:text-slate-900"
         >
           <ArrowLeft className="h-4 w-4" />
           Retour aux entreprises
         </button>
-        <h1 className="text-2xl font-bold text-gray-900">{organization.name}</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Gérez les informations et l'identité visuelle de votre entreprise
+        <h1 className="text-[1.625rem] font-semibold tracking-tight text-slate-900 sm:text-3xl sm:font-semibold">{organization.name}</h1>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500 sm:text-[15px]">
+          Gérez les informations et l&apos;identité visuelle de votre entreprise
         </p>
       </div>
 
@@ -129,20 +129,20 @@ export function CompanyEditorPage({ orgId }: CompanyEditorPageProps) {
       <div className="lg:hidden max-w-6xl mx-auto mb-4">
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="w-full flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors"
+          className="flex w-full items-center gap-3 rounded-xl border border-slate-200/80 bg-white px-4 py-3.5 text-sm font-medium text-slate-700 shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-colors hover:border-slate-300 hover:bg-white"
         >
           <activeTabMeta.icon className="h-4 w-4 text-blue-600 shrink-0" />
           <span className="flex-1 text-left">{activeTabMeta.label}</span>
           {menuOpen ? (
-            <X className="h-4 w-4 text-gray-400" />
+            <X className="h-4 w-4 text-slate-400" />
           ) : (
-            <Menu className="h-4 w-4 text-gray-400" />
+            <Menu className="h-4 w-4 text-slate-400" />
           )}
         </button>
 
         {menuOpen && (
-          <div className="mt-1 bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden z-20 relative">
-            <ul className="p-1.5 space-y-0.5">
+          <div className="relative z-20 mt-1 overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-lg shadow-slate-900/10">
+            <ul className="space-y-0.5 p-2">
               {TABS.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
@@ -150,14 +150,14 @@ export function CompanyEditorPage({ orgId }: CompanyEditorPageProps) {
                   <li key={tab.id}>
                     <button
                       onClick={() => handleTabSelect(tab.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
-                        isActive ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'
+                      className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm transition-all ${
+                        isActive ? 'bg-blue-50 font-semibold text-blue-700' : 'text-slate-600 hover:bg-slate-50'
                       }`}
                     >
-                      <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
+                      <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-400'}`} />
                       <span className="flex-1 text-left">{tab.label}</span>
                       {tab.soon && (
-                        <span className="text-[10px] font-medium bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-md">
+                        <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
                           Bientôt
                         </span>
                       )}
@@ -172,15 +172,13 @@ export function CompanyEditorPage({ orgId }: CompanyEditorPageProps) {
       </div>
 
       {/* Desktop layout */}
-      <div className="max-w-6xl mx-auto flex gap-6 items-start">
-        <aside className="hidden lg:flex flex-col w-56 shrink-0 sticky top-8">
-          <nav className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="px-3 py-3 border-b border-gray-50">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 px-2">
-                Paramètres
-              </p>
+      <div className="mx-auto flex max-w-6xl items-start gap-8">
+        <aside className="sticky top-8 hidden w-[15.5rem] shrink-0 lg:flex lg:flex-col">
+          <nav className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.04)] ring-1 ring-slate-900/[0.02]">
+            <div className="border-b border-slate-100 px-4 py-4">
+              <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">Paramètres</p>
             </div>
-            <ul className="p-2 space-y-0.5">
+            <ul className="space-y-1 p-3">
               {TABS.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
@@ -188,20 +186,18 @@ export function CompanyEditorPage({ orgId }: CompanyEditorPageProps) {
                   <li key={tab.id}>
                     <button
                       onClick={() => handleTabSelect(tab.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all group ${
-                        isActive
-                          ? 'bg-blue-50 text-blue-700 font-semibold'
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      className={`group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm transition-all ${
+                        isActive ? 'bg-blue-50 font-semibold text-blue-700 shadow-inner shadow-blue-900/5' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                       }`}
                     >
                       <Icon
                         className={`h-4 w-4 shrink-0 transition-colors ${
-                          isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'
+                          isActive ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600'
                         }`}
                       />
                       <span className="flex-1 text-left truncate">{tab.label}</span>
                       {tab.soon && (
-                        <span className="text-[10px] font-medium bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-md">
+                        <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
                           Bientôt
                         </span>
                       )}
@@ -262,13 +258,13 @@ interface ComingSoonPanelProps {
 
 function ComingSoonPanel({ label, icon: Icon, description }: ComingSoonPanelProps) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-12 text-center">
-      <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-4">
-        <Icon className="h-7 w-7 text-gray-300" />
+    <div className="rounded-2xl border border-slate-200/70 bg-white p-12 text-center shadow-[0_1px_3px_rgba(15,23,42,0.04)] ring-1 ring-slate-900/[0.02]">
+      <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50">
+        <Icon className="h-7 w-7 text-slate-300" />
       </div>
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">{label}</h3>
-      <p className="text-sm text-gray-500 max-w-md mx-auto">{description}</p>
-      <span className="inline-block mt-5 text-xs font-medium bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full">
+      <h3 className="mb-2 text-lg font-semibold tracking-tight text-slate-900">{label}</h3>
+      <p className="mx-auto max-w-md text-sm leading-relaxed text-slate-500">{description}</p>
+      <span className="mt-6 inline-block rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-600">
         Bientôt disponible
       </span>
     </div>

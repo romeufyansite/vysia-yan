@@ -1,10 +1,22 @@
 import { useState } from 'react';
-import { Building2, Hash, Receipt, MapPin, Mail, Phone, Save, Loader as Loader2, CircleCheck as CheckCircle2 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import {
+  Building2,
+  Hash,
+  Receipt,
+  MapPin,
+  Mail,
+  Phone,
+  Save,
+  Loader as Loader2,
+  CircleCheck as CheckCircle2,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { organizationService, type Organization } from '@/services/organization.service';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 interface CompanyInfoTabProps {
   organization: Organization;
@@ -60,38 +72,30 @@ export function CompanyInfoTab({ organization, onUpdate }: CompanyInfoTabProps) 
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8 pb-28">
       {/* Section Identité */}
-      <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-            <Building2 className="h-5 w-5 text-blue-600" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-gray-900">Identité</h3>
-            <p className="text-xs text-gray-500">Comment votre entreprise est identifiée</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <section className="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-[0_1px_3px_rgba(15,23,42,0.04)] ring-1 ring-slate-900/[0.02] sm:p-9">
+        <SectionHeader
+          icon={Building2}
+          title="Identité"
+          subtitle="Comment votre entreprise est identifiée"
+        />
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-6">
           <FieldText label="Nom commercial" required value={name} onChange={setName} placeholder="Vysia" />
           <FieldText label="Raison sociale" value={legalName} onChange={setLegalName} placeholder="Vysia SAS" />
-          <FieldText label="SIRET / N° d'enregistrement" icon={<Hash className="h-4 w-4 text-gray-400" />} value={registrationNumber} onChange={setRegistrationNumber} placeholder="123 456 789 00010" />
-          <FieldText label="Numéro de TVA" icon={<Receipt className="h-4 w-4 text-gray-400" />} value={vatNumber} onChange={setVatNumber} placeholder="FR12345678901" />
+          <FieldText label="SIRET / N° d'enregistrement" icon={<Hash className="h-[1.125rem] w-[1.125rem] text-slate-400" />} value={registrationNumber} onChange={setRegistrationNumber} placeholder="123 456 789 00010" />
+          <FieldText label="Numéro de TVA" icon={<Receipt className="h-[1.125rem] w-[1.125rem] text-slate-400" />} value={vatNumber} onChange={setVatNumber} placeholder="FR12345678901" />
         </div>
       </section>
 
       {/* Section Adresse */}
-      <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-            <MapPin className="h-5 w-5 text-blue-600" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-gray-900">Adresse de facturation</h3>
-            <p className="text-xs text-gray-500">Adresse utilisée pour vos factures</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <section className="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-[0_1px_3px_rgba(15,23,42,0.04)] ring-1 ring-slate-900/[0.02] sm:p-9">
+        <SectionHeader
+          icon={MapPin}
+          title="Adresse de facturation"
+          subtitle="Adresse utilisée pour vos factures"
+        />
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-6">
           <div className="sm:col-span-2">
             <FieldText label="Adresse" value={addressLine1} onChange={setAddressLine1} placeholder="1 rue de la République" />
           </div>
@@ -107,33 +111,64 @@ export function CompanyInfoTab({ organization, onUpdate }: CompanyInfoTabProps) 
       </section>
 
       {/* Section Contact facturation */}
-      <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-            <Mail className="h-5 w-5 text-blue-600" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-gray-900">Contact facturation</h3>
-            <p className="text-xs text-gray-500">Où envoyer les documents comptables</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FieldText label="Email" icon={<Mail className="h-4 w-4 text-gray-400" />} type="email" value={billingEmail} onChange={setBillingEmail} placeholder="facturation@entreprise.com" />
-          <FieldText label="Téléphone" icon={<Phone className="h-4 w-4 text-gray-400" />} type="tel" value={billingPhone} onChange={setBillingPhone} placeholder="+33 1 23 45 67 89" />
+      <section className="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-[0_1px_3px_rgba(15,23,42,0.04)] ring-1 ring-slate-900/[0.02] sm:p-9">
+        <SectionHeader
+          icon={Mail}
+          title="Contact facturation"
+          subtitle="Où envoyer les documents comptables"
+        />
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-6">
+          <FieldText label="Email" icon={<Mail className="h-[1.125rem] w-[1.125rem] text-slate-400" />} type="email" value={billingEmail} onChange={setBillingEmail} placeholder="facturation@entreprise.com" />
+          <FieldText label="Téléphone" icon={<Phone className="h-[1.125rem] w-[1.125rem] text-slate-400" />} type="tel" value={billingPhone} onChange={setBillingPhone} placeholder="+33 1 23 45 67 89" />
         </div>
       </section>
 
-      {/* Save bar */}
-      <div className="flex items-center justify-end gap-3 sticky bottom-4">
-        <Button
-          onClick={handleSave}
-          disabled={saving}
-          className="h-11 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium gap-2 min-w-[160px] shadow-lg shadow-blue-600/20"
-        >
-          {saving ? (<><Loader2 className="h-4 w-4 animate-spin" />Sauvegarde...</>) :
-            saved ? (<><CheckCircle2 className="h-4 w-4" />Sauvegardé</>) :
-            (<><Save className="h-4 w-4" />Enregistrer</>)}
-        </Button>
+      {/* Save bar — sticky, readable on long forms */}
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-white/85 px-4 py-4 backdrop-blur-md supports-[backdrop-filter]:bg-white/70 sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-end">
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className="h-12 min-w-[11rem] gap-2 rounded-xl bg-blue-600 px-7 text-base font-medium text-white shadow-md shadow-blue-600/15 transition-all hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/20 disabled:opacity-60"
+          >
+            {saving ? (
+              <>
+                <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
+                Sauvegarde…
+              </>
+            ) : saved ? (
+              <>
+                <CheckCircle2 className="h-4 w-4 shrink-0" />
+                Sauvegardé
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4 shrink-0" />
+                Enregistrer
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface SectionHeaderProps {
+  icon: LucideIcon;
+  title: string;
+  subtitle: string;
+}
+
+function SectionHeader({ icon: Icon, title, subtitle }: SectionHeaderProps) {
+  return (
+    <div className="flex flex-col gap-4 border-b border-slate-100 pb-6 sm:flex-row sm:items-center sm:gap-5">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600/12 to-blue-600/6 text-blue-600 ring-1 ring-blue-600/10">
+        <Icon className="h-6 w-6" aria-hidden />
+      </div>
+      <div className="min-w-0">
+        <h3 className="text-lg font-semibold tracking-tight text-slate-900">{title}</h3>
+        <p className="mt-0.5 text-sm leading-relaxed text-slate-500">{subtitle}</p>
       </div>
     </div>
   );
@@ -151,19 +186,23 @@ interface FieldTextProps {
 
 function FieldText({ label, value, onChange, placeholder, type = 'text', required, icon }: FieldTextProps) {
   return (
-    <div className="space-y-2">
-      <Label className="text-sm font-medium text-gray-700">
+    <div className="space-y-2.5">
+      <Label className="text-sm font-medium leading-none text-slate-700">
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        {required && <span className="ml-0.5 text-red-500">*</span>}
       </Label>
       <div className="relative">
-        {icon && <div className="absolute left-3 top-1/2 -translate-y-1/2">{icon}</div>}
+        {icon && (
+          <div className="pointer-events-none absolute left-4 top-1/2 flex h-[1.125rem] w-[1.125rem] -translate-y-1/2 items-center justify-center">
+            {icon}
+          </div>
+        )}
         <Input
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className={`h-11 rounded-xl border-gray-200 focus:border-blue-400 focus:ring-blue-100 ${icon ? 'pl-9' : ''}`}
+          className={cn(icon && 'pl-12')}
         />
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ListMusic, Settings, Menu, Eye, Pencil, Trash2 } from 'lucide-react';
+import { ListMusic, Menu, Settings } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import type { Screen, PlaylistItem, Zone, ZoneTemplate } from '@/types';
+import type { Screen, PlaylistItem, ZoneTemplate } from '@/types';
 import { playlistService } from '@/services/playlist.service';
 
 interface ScreenCardProps {
@@ -101,7 +101,6 @@ function ZoneThumbnail({ playlistId, zoneLabel }: { playlistId: string | null; z
   return (
     <div className="relative w-full h-full overflow-hidden">
       {renderContent()}
-      {/* Overlay avec le label */}
       <div className="absolute inset-0 bg-black/20" />
     </div>
   );
@@ -130,14 +129,11 @@ function ScreenZonesPreview({ screen }: { screen: Screen }) {
 
 export function ScreenCard({
   screen,
-  onClick,
   onStatusChange,
   onPreview,
   onEdit,
   onDelete,
 }: ScreenCardProps) {
-  const [isBodyHovered, setIsBodyHovered] = useState(false);
-
   const getDeviceTypeLabel = (deviceType?: string) => {
     switch (deviceType) {
       case 'connected_tv':
@@ -151,46 +147,36 @@ export function ScreenCard({
     }
   };
 
-  // Bloquer la propagation du clic pour le header
-  const handleHeaderClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-all duration-200 rounded-2xl bg-white relative">
-      <CardContent className="p-0 relative">
-        {/* Overlay blur - couvre toute la carte quand la partie basse est en hover */}
-        <div
-          className={`absolute inset-0 bg-white/60 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-2xl transition-opacity duration-300 cursor-pointer ${
-            isBodyHovered ? 'opacity-100' : 'opacity-0'
-          }`}
-          style={{ pointerEvents: isBodyHovered ? 'auto' : 'none' }}
-          onClick={onEdit}
-        >
-          <Settings className="h-12 w-12 text-gray-700 mb-2" />
-          <span className="text-sm font-medium text-gray-700">Modifier</span>
+    <Card className="relative overflow-hidden rounded-2xl border-0 bg-slate-100 shadow-none ring-0 transition-colors hover:bg-slate-200/35 [&:has(.screen-card-body:hover)_.screen-card-overlay]:opacity-100">
+      <CardContent className="relative p-0">
+        <div className="screen-card-overlay pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center rounded-2xl bg-slate-100/65 opacity-0 backdrop-blur-[3px] transition-opacity duration-200">
+          <Settings className="mb-2 h-10 w-10 text-slate-600" />
+          <span className="text-sm font-medium text-slate-700">Modifier</span>
         </div>
 
-        <div className="p-5 relative z-20">
-          {/* Header - bloque la propagation du clic */}
-          <div className="flex items-start justify-between mb-1" onClick={handleHeaderClick}>
-            <div className="flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                    <div
-                      className={`w-2.5 h-2.5 rounded-full ${
-                        screen.status === 'online' ? 'bg-green-500' : 'bg-red-500'
-                      }`}
-                    />
-                    <h3 className="font-semibold text-sm">{screen.name}</h3>
-                    <span className={`text-xs font-medium ${
-                      screen.status === 'online' ? 'text-green-500' : 'text-red-500'
-                    }`}>
-                      ({screen.status === 'online' ? 'En ligne' : 'Hors ligne'})
-                    </span>
-                  </button>
-                </DropdownMenuTrigger>
+        <div className="relative z-10 px-1.5 pb-0 pt-2">
+          <div className="mb-3 flex items-start justify-between gap-2 border-b border-slate-300/50">
+            <div className="flex min-w-0 flex-1 gap-2">
+              <div
+                className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${
+                  screen.status === 'online' ? 'bg-emerald-500' : 'bg-red-500'
+                }`}
+              />
+              <div className="min-w-0 flex-1">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex min-w-0 items-center gap-2 text-left transition-opacity hover:opacity-80">
+                      <h3 className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900">{screen.name}</h3>
+                      <span
+                        className={`shrink-0 text-xs font-medium ${
+                          screen.status === 'online' ? 'text-emerald-600' : 'text-red-500'
+                        }`}
+                      >
+                        ({screen.status === 'online' ? 'En ligne' : 'Hors ligne'})
+                      </span>
+                    </button>
+                  </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
                   <DropdownMenuItem onClick={() => onStatusChange('online')}>
                     Marquer comme en ligne
@@ -200,13 +186,17 @@ export function ScreenCard({
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+                <p className="mt-0.5 pb-1 text-[8px] font-medium uppercase leading-tight tracking-wide text-slate-500">
+                  {getDeviceTypeLabel(screen.device_type)}
+                </p>
+              </div>
             </div>
 
-            {/* Menu 3 points */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-7 w-7 -mr-2">
-                  <Menu className="h-5 w-5 text-gray-600" />
+                <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-slate-500 hover:text-slate-800">
+                  <Menu className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -223,25 +213,19 @@ export function ScreenCard({
             </DropdownMenu>
           </div>
 
-          <div className="text-[8px] text-gray-500 font-medium mb-6 -mt-3 ml-[18px] pb-4 border-b border-gray-200" onClick={handleHeaderClick}>
-            {getDeviceTypeLabel(screen.device_type)}
-          </div>
-
-          {/* Body - déclenche le blur overlay au hover, et ouvre edit au clic */}
+          {/* Body - déclenche le blur overlay au hover */}
           <div
-            className="relative cursor-pointer"
-            onMouseEnter={() => setIsBodyHovered(true)}
-            onMouseLeave={() => setIsBodyHovered(false)}
+            className="screen-card-body relative cursor-pointer"
             onClick={onEdit}
           >
             {/* Zone-based preview */}
-            <div className="relative aspect-video w-full rounded-lg mb-1 overflow-hidden flex items-center justify-center">
+            <div className="relative mb-0 flex aspect-video w-full items-center justify-center overflow-hidden rounded-lg px-px">
               {screen.orientation === 'portrait' ? (
                 <div className="relative h-full rounded overflow-hidden" style={{ aspectRatio: '9/16' }}>
                   <ScreenZonesPreview screen={screen} />
                 </div>
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center p-1">
+                <div className="absolute inset-0 flex items-center justify-center p-0.5">
                   <div className="relative w-full h-full rounded overflow-hidden">
                     <ScreenZonesPreview screen={screen} />
                   </div>
@@ -250,11 +234,11 @@ export function ScreenCard({
             </div>
 
             {/* Stand */}
-            <div className="flex justify-center items-center mb-0.5 pointer-events-none">
-              <div className="w-1 h-3 bg-gray-600" />
+            <div className="mb-0.5 flex items-center justify-center">
+              <div className="h-3 w-1 rounded-[1px] bg-slate-500" />
             </div>
-            <div className="flex justify-center items-center mb-4 pointer-events-none">
-              <div className="w-24 h-1 bg-gray-600" />
+            <div className="flex items-center justify-center pb-px">
+              <div className="h-1 w-24 rounded-full bg-slate-500/90" />
             </div>
           </div>
         </div>

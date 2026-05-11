@@ -25,20 +25,20 @@ export function PermissionsEditor({ value, onChange, disabled }: PermissionsEdit
   };
 
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden">
-      <div className="grid grid-cols-[1fr_80px_80px] items-center gap-2 px-4 py-2 bg-gray-50 border-b border-gray-200 text-xs font-semibold uppercase tracking-wider text-gray-500">
+    <div className="overflow-hidden rounded-xl border border-slate-200/80 shadow-sm ring-1 ring-slate-900/[0.02]">
+      <div className="grid grid-cols-[1fr_80px_80px] items-center gap-2 border-b border-slate-200 bg-slate-50/80 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-slate-500">
         <span>Ressource</span>
         <span className="text-center">Voir</span>
         <span className="text-center">Gérer</span>
       </div>
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y divide-slate-100">
         {ALL_RESOURCES.map((res) => {
           const perms = value[res.id] ?? {};
           return (
             <div key={res.id} className="grid grid-cols-[1fr_80px_80px] items-center gap-2 px-4 py-3">
               <div>
-                <div className="text-sm font-medium text-gray-900">{res.label}</div>
-                <div className="text-xs text-gray-500">{res.description}</div>
+                <div className="text-sm font-medium text-slate-900">{res.label}</div>
+                <div className="text-xs text-slate-500">{res.description}</div>
               </div>
               <div className="flex justify-center">
                 <Checkbox

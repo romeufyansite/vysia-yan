@@ -117,27 +117,27 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
   };
 
   return (
-    <aside className={`h-screen bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ${
+    <aside className={`h-screen bg-white border-r border-slate-200/80 flex flex-col transition-all duration-300 ${
       isMobile ? 'fixed left-0 top-0 z-50 w-64' : 'relative'
     } ${
       isMobile && isCollapsed ? '-translate-x-full' : 'translate-x-0'
     } ${
       !isMobile && isCollapsed ? 'w-[88px]' : !isMobile ? 'w-64' : ''
     }`}>
-      <div className="p-4 border-b border-gray-200 flex items-center justify-between gap-2 py-6">
+      <div className="flex items-center justify-between gap-2 border-b border-slate-200/80 p-4 py-6">
         {!isCollapsed ? (
           <>
             <div className="flex items-center gap-2 flex-1">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
                 V
               </div>
-              <span className="font-bold text-lg text-gray-800">Vysia</span>
+              <span className="text-lg font-bold text-slate-800">Vysia</span>
             </div>
             <Button
               variant="ghost"
               size="icon"
               onClick={toggleSidebar}
-              className="h-8 w-8 rounded-lg hover:bg-gray-100 shrink-0"
+              className="h-8 w-8 shrink-0 rounded-lg hover:bg-slate-100"
             >
               <ListIndentDecrease className="h-4 w-4" />
             </Button>
@@ -151,7 +151,7 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
               variant="ghost"
               size="icon"
               onClick={toggleSidebar}
-              className="h-8 w-8 rounded-lg hover:bg-gray-100 shrink-0"
+              className="h-8 w-8 shrink-0 rounded-lg hover:bg-slate-100"
             >
               <ListIndentIncrease className="h-4 w-4" />
             </Button>
@@ -173,7 +173,7 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
               variant={isActive ? 'secondary' : 'ghost'}
               onClick={() => handleNavigate(item.path)}
               className={`w-full ${isCollapsed ? 'justify-center px-0' : 'justify-start'} h-11 rounded-xl font-medium ${
-                isActive ? 'bg-gray-100' : 'text-gray-600'
+                isActive ? 'bg-slate-100 text-slate-900' : 'text-slate-600'
               }`}
               title={isCollapsed ? item.name : undefined}
             >
@@ -187,7 +187,7 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
           <Button
             variant="ghost"
             onClick={() => setMediaLibraryOpen(true)}
-            className={`w-full ${isCollapsed ? 'justify-center px-0' : 'justify-start'} h-11 rounded-xl text-gray-600 font-medium`}
+            className={`w-full ${isCollapsed ? 'justify-center px-0' : 'justify-start'} h-11 rounded-xl font-medium text-slate-600`}
             title={isCollapsed ? 'Média librairie' : undefined}
           >
             <Library className={`h-5 w-5 ${!isCollapsed ? 'mr-3' : ''}`} />
@@ -196,13 +196,13 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
         )}
       </nav>
 
-      <div className="p-4 space-y-1 border-t border-gray-200">
+      <div className="space-y-1 border-t border-slate-200/80 p-4">
         {!isCollapsed && (
           <Collapsible open={settingsOpen} onOpenChange={setSettingsOpen}>
             <CollapsibleTrigger asChild>
               <Button
                 variant="ghost"
-                className="w-full justify-between h-11 rounded-xl text-gray-600 font-medium"
+                className="h-11 w-full justify-between rounded-xl font-medium text-slate-600"
               >
                 <div className="flex items-center">
                   <Settings className="h-5 w-5 mr-3" />
@@ -221,8 +221,8 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
                     key={item.path}
                     variant="ghost"
                     onClick={() => handleNavigate(item.path)}
-                    className={`w-full justify-start h-9 rounded-lg text-sm ${
-                      isActive ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-600'
+                    className={`h-9 w-full justify-start rounded-lg text-sm ${
+                      isActive ? 'bg-slate-100 font-medium text-slate-900' : 'text-slate-600'
                     }`}
                   >
                     {item.label}
@@ -237,7 +237,7 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
           <Button
             variant="ghost"
             onClick={() => handleNavigate('/settings/profil')}
-            className="w-full justify-center px-0 h-11 rounded-xl text-gray-600 font-medium"
+            className="h-11 w-full justify-center rounded-xl px-0 font-medium text-slate-600"
             title="Paramètres"
           >
             <Settings className="h-5 w-5" />

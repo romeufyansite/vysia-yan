@@ -184,25 +184,22 @@ export function ScreensPage() {
 
   return (
     <div className="h-full">
-      <div className="border-b border-gray-200 bg-white px-8 py-5">
+      <div className="border-b border-slate-200/80 bg-white px-8 py-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-gray-900">Écrans</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Écrans</h1>
           <div className="flex gap-3">
-            
-             <Button variant="outline" className="rounded-xl h-10">
-              <Filter className="h-4 w-4 mr-2" />
+            <Button variant="outline" className="h-11 gap-2 rounded-xl">
+              <Filter className="h-4 w-4" />
               Filtrer
             </Button>
 
-            
-            
             {canManage && (
               <Button
-                variant="outline"
+                variant="default"
                 onClick={() => setBuyModalOpen(true)}
-                className="rounded-xl h-10 bg-gray-900 hover:bg-gray-800 text-white hover:text-white"
+                className="h-11 gap-2 rounded-xl shadow-md shadow-primary/15"
               >
-                <Filter className="h-4 w-4 mr-2" />
+                <Filter className="h-4 w-4" />
                 Acheter des écrans
               </Button>
             )}
@@ -214,28 +211,28 @@ export function ScreensPage() {
       <div className="p-8">
         <div className="mb-6 space-y-4">
           <Select value={selectedGroup} onValueChange={setSelectedGroup} open={selectOpen} onOpenChange={setSelectOpen}>
-            <SelectTrigger className="w-64 rounded-xl h-12 bg-white">
+            <SelectTrigger className="w-64">
               <div className="flex items-center gap-2">
-                <FolderOpen className="h-4 w-4 text-gray-500" />
+                <FolderOpen className="h-4 w-4 text-slate-500" />
                 <SelectValue placeholder="Sélectionner un groupe" />
               </div>
             </SelectTrigger>
             <SelectContent className="rounded-xl">
               <div className="p-2">
                 <div className="relative mb-2">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 mb-1 mt-1" />
+                  <Search className="absolute left-3 top-1/2 mb-1 mt-1 h-4 w-4 -translate-y-1/2 transform text-slate-400" />
                   <Input
                     placeholder="Rechercher..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9 rounded-lg border-0 bg-gray-50"
+                    className="h-10 min-h-10 rounded-lg border-0 bg-slate-100/90 pl-9 text-sm"
                   />
                 </div>
               </div>
               <SelectItem value="all" className="rounded-lg">
                 <div className="flex items-center justify-between w-full mb-1 mt-1">
                   <span>Tous</span>
-                  <span className="text-xs text-gray-400 ml-2">{screens.length}</span>
+                  <span className="ml-2 text-xs text-slate-400">{screens.length}</span>
                 </div>
               </SelectItem>
             
@@ -260,7 +257,7 @@ export function ScreensPage() {
               {canManage && (
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-sm text-gray-600 rounded-lg mb-1 mt-1"
+                  className="w-full justify-start rounded-lg mb-1 mt-1 text-sm text-slate-600"
                   onClick={(e) => {
                     e.preventDefault();
                     setSelectOpen(false);
@@ -330,14 +327,9 @@ export function ScreensPage() {
       />
 
       {screens.length === 0 && (
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-2xl shadow-lg px-6 py-4 flex items-center gap-4">
-          <span className="text-sm">
-            Configurez votre premier écran
-          </span>
-          <Button
-            className="rounded-xl bg-gray-900 hover:bg-gray-800"
-            onClick={() => window.open('/#/player', '_blank')}
-          >
+        <div className="fixed bottom-8 left-1/2 flex -translate-x-1/2 transform items-center gap-4 rounded-2xl border border-slate-200/80 bg-white px-6 py-4 shadow-lg shadow-slate-900/10 ring-1 ring-slate-900/[0.04]">
+          <span className="text-sm text-slate-700">Configurez votre premier écran</span>
+          <Button className="rounded-xl shadow-md shadow-primary/15" onClick={() => window.open('/#/player', '_blank')}>
             Connecter un écran
             <ChevronDown className="ml-2 h-4 w-4 rotate-[-90deg]" />
           </Button>

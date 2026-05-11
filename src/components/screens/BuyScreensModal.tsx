@@ -31,13 +31,13 @@ export function BuyScreensModal({ open, onOpenChange }: BuyScreensModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[900px] rounded-3xl p-0 bg-gray-50">
+      <DialogContent className="overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-b from-slate-50 to-white p-0 sm:max-w-[900px]">
         <div className="relative">
           <div className="px-8 py-6">
             <h2 className="text-3xl font-bold text-center mb-8">Acheter des écrans</h2>
 
             <div className="grid grid-cols-2 gap-5">
-              <div className="bg-white rounded-2xl p-6 border border-gray-200">
+              <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
                 <h3 className="text-xl font-semibold text-center mb-8">Nombre d'écrans</h3>
 
                 <div className="flex items-center justify-center gap-3 mb-8">
@@ -45,7 +45,7 @@ export function BuyScreensModal({ open, onOpenChange }: BuyScreensModalProps) {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleQuantityChange(-1)}
-                    className="h-12 w-12 rounded-2xl bg-gray-100 hover:bg-gray-200"
+                    className="h-12 min-h-12 w-12 rounded-2xl bg-slate-100 hover:bg-slate-200"
                   >
                     <Minus className="h-5 w-5" />
                   </Button>
@@ -56,7 +56,7 @@ export function BuyScreensModal({ open, onOpenChange }: BuyScreensModalProps) {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleQuantityChange(1)}
-                    className="h-12 w-12 rounded-2xl bg-gray-100 hover:bg-gray-200"
+                    className="h-12 min-h-12 w-12 rounded-2xl bg-slate-100 hover:bg-slate-200"
                   >
                     <Plus className="h-5 w-5" />
                   </Button>
@@ -64,7 +64,7 @@ export function BuyScreensModal({ open, onOpenChange }: BuyScreensModalProps) {
 
                 <div className="flex items-center justify-center gap-3 mb-6">
                   <Select value={currency} disabled>
-                    <SelectTrigger className="w-24 h-12 rounded-2xl border-2 text-sm">
+                    <SelectTrigger className="h-12 min-h-12 w-24 rounded-2xl border-2 border-slate-200 bg-white text-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -77,7 +77,7 @@ export function BuyScreensModal({ open, onOpenChange }: BuyScreensModalProps) {
                   </div>
 
                   <Select value={frequency} onValueChange={setFrequency}>
-                    <SelectTrigger className="w-32 h-12 rounded-2xl border-2 text-sm">
+                    <SelectTrigger className="h-12 min-h-12 w-32 rounded-2xl border-2 border-slate-200 bg-white text-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -89,26 +89,26 @@ export function BuyScreensModal({ open, onOpenChange }: BuyScreensModalProps) {
 
                 <Input
                   placeholder="Code promo"
-                  className="h-12 rounded-2xl border-2 text-sm placeholder:text-gray-400"
+                  className="h-12 min-h-12 rounded-2xl border-2 border-slate-200 text-sm placeholder:text-slate-400"
                 />
               </div>
 
-              <div className="bg-white rounded-2xl p-6 border border-gray-200">
+              <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
                 <h3 className="text-xl font-semibold text-center mb-8">Payer par carte</h3>
 
                 <div className="space-y-3">
                   <Input
                     placeholder="Nom sur la carte"
-                    className="h-12 rounded-2xl border border-black-500 text-sm placeholder:text-gray-400"
+                    className="h-12 min-h-12 rounded-2xl border border-slate-300 text-sm placeholder:text-slate-400"
                   />
 
                   <div className="relative">
-                    <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <CreditCard className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 transform text-slate-400" />
                     <Input
                       placeholder="Numéro de carte"
-                      className="h-12 rounded-2xl border border-black-500 text-sm placeholder:text-gray-400 pl-10 pr-24"
+                      className="h-12 min-h-12 rounded-2xl border border-slate-300 pl-11 pr-24 text-sm placeholder:text-slate-400"
                     />
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs">
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 transform text-xs text-slate-400">
                       MM / AA
                     </div>
                   </div>
@@ -116,14 +116,14 @@ export function BuyScreensModal({ open, onOpenChange }: BuyScreensModalProps) {
                   <div className="flex gap-2 mt-6">
                     <Button
                       disabled
-                      className="flex-1 h-12 rounded-2xl text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-200"
+                      className="h-12 min-h-12 flex-1 rounded-2xl bg-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-200"
                     >
                       Payer {(quantity * pricePerScreen).toFixed(2)} €
                     </Button>
                     <Button
                       variant="outline"
                       onClick={() => onOpenChange(false)}
-                      className="flex-1 h-12 rounded-2xl text-sm font-medium border border-black-500"
+                      className="h-12 min-h-12 flex-1 rounded-2xl border-slate-300 text-sm font-medium"
                     >
                       Annuler
                     </Button>
@@ -132,16 +132,16 @@ export function BuyScreensModal({ open, onOpenChange }: BuyScreensModalProps) {
               </div>
             </div>
 
-            <div className="mt-6 text-center text-xs text-gray-500">
+            <div className="mt-6 text-center text-xs text-slate-500">
               En confirmant votre carte, vous autorisez Juuno.co à débiter votre carte pour les paiements futurs conformément à leurs conditions.
             </div>
 
             <div className="mt-3 flex items-center justify-center gap-2">
-              <div className="px-2.5 py-1 border border-gray-300 rounded text-[10px] text-gray-600 flex items-center gap-1">
+              <div className="flex items-center gap-1 rounded border border-slate-200 px-2.5 py-1 text-[10px] text-slate-600">
                 Propulsé par <span className="font-semibold">stripe</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="w-5 h-5 border border-gray-300 rounded flex items-center justify-center">
+                <div className="flex h-5 w-5 items-center justify-center rounded border border-slate-200">
                   <div className="text-[10px]">🔒</div>
                 </div>
                 <div className="text-lg">💳</div>

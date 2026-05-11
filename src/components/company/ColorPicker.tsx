@@ -36,7 +36,7 @@ export function ColorPicker({ hex, onChange }: ColorPickerProps) {
         <button
           type="button"
           onClick={() => ref.current?.click()}
-          className="w-14 h-14 rounded-xl border border-gray-200 shadow-sm cursor-pointer transition-transform hover:scale-105"
+          className="h-14 w-14 cursor-pointer rounded-xl border border-slate-200/80 shadow-sm transition-transform hover:scale-105"
           style={{ backgroundColor: value }}
           aria-label="Ouvrir le nuancier"
         />
@@ -52,14 +52,14 @@ export function ColorPicker({ hex, onChange }: ColorPickerProps) {
           className="sr-only"
         />
         <div className="flex-1">
-          <label className="block text-xs text-gray-500 mb-1">Code hexadécimal</label>
+          <label className="mb-1 block text-xs font-medium text-slate-600">Code hexadécimal</label>
           <input
             type="text"
             value={hexInput}
             onChange={(e) => setHexInput(e.target.value.toUpperCase())}
             onBlur={() => commit(hexInput)}
             onKeyDown={(e) => { if (e.key === 'Enter') commit(hexInput); }}
-            className="w-full h-10 px-3 rounded-lg border border-gray-200 font-mono text-sm uppercase focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+            className="h-11 min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/40 px-3 font-mono text-sm uppercase text-slate-900 transition-[border-color,box-shadow] placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             placeholder="#000000"
             maxLength={7}
           />
@@ -68,7 +68,7 @@ export function ColorPicker({ hex, onChange }: ColorPickerProps) {
 
       {/* Preset swatches */}
       <div>
-        <p className="text-xs text-gray-500 mb-2">Suggestions</p>
+        <p className="mb-2 text-xs font-medium text-slate-600">Suggestions</p>
         <div className="grid grid-cols-8 gap-2">
           {PRESETS.map((preset) => (
             <button
@@ -76,7 +76,7 @@ export function ColorPicker({ hex, onChange }: ColorPickerProps) {
               type="button"
               onClick={() => { setValue(preset); setHexInput(preset); onChange(preset); }}
               className={`w-8 h-8 rounded-lg border transition-all ${
-                value.toUpperCase() === preset.toUpperCase() ? 'ring-2 ring-blue-500 ring-offset-2 border-transparent' : 'border-gray-200 hover:scale-110'
+                value.toUpperCase() === preset.toUpperCase() ? 'ring-2 ring-blue-500 ring-offset-2 border-transparent' : 'border-slate-200 hover:scale-110'
               }`}
               style={{ backgroundColor: preset }}
               aria-label={preset}

@@ -141,34 +141,34 @@ export function InvitationPage() {
 
   if (pageLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50/60 p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xl shadow-slate-900/10">
           {/* Header */}
-          <div className="px-8 pt-8 pb-6 text-center border-b border-gray-100">
+          <div className="border-b border-slate-100 px-8 pb-6 pt-8 text-center">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-4 shadow-md">
               <Building2 className="h-7 w-7 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-gray-900">Invitation à rejoindre</h1>
+            <h1 className="text-xl font-semibold tracking-tight text-slate-900">Invitation à rejoindre</h1>
             {preview && (
               <div className="mt-2">
-                <p className="text-sm font-semibold text-gray-800">{orgLabel}</p>
+                <p className="text-sm font-semibold text-slate-800">{orgLabel}</p>
                 {preview.inviter_email && (
-                  <p className="text-xs text-gray-500 mt-0.5">invité par {preview.inviter_email}</p>
+                  <p className="mt-0.5 text-xs text-slate-500">invité par {preview.inviter_email}</p>
                 )}
               </div>
             )}
           </div>
 
           {/* Body */}
-          <div className="p-8">
+          <div className="bg-slate-50/80 px-8 py-8">
             {error ? (
               <div className="text-center space-y-4">
                 <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl p-3">{error}</p>
@@ -214,10 +214,10 @@ export function InvitationPage() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="6 caractères minimum"
-                        className="rounded-xl h-11 pr-10"
+                        className="pr-11"
                         autoFocus
                       />
-                      <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                         {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
                     </div>
@@ -225,7 +225,8 @@ export function InvitationPage() {
                   <Button
                     onClick={() => doAccept(password)}
                     disabled={submitting || password.length < 6}
-                    className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 h-11 font-semibold"
+                    size="lg"
+                    className="w-full rounded-xl font-semibold shadow-md shadow-primary/15"
                   >
                     {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                     Définir mon mot de passe et rejoindre
@@ -237,7 +238,7 @@ export function InvitationPage() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label>Adresse e-mail</Label>
-                  <Input value={preview.email} disabled className="rounded-xl h-11 bg-gray-50" />
+                  <Input value={preview.email} disabled className="cursor-not-allowed opacity-75" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="auth-pw">{mode === 'signup' ? 'Choisir un mot de passe' : 'Mot de passe'}</Label>
@@ -248,10 +249,10 @@ export function InvitationPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder={mode === 'signup' ? '6 caractères minimum' : ''}
-                      className="rounded-xl h-11 pr-10"
+                      className="pr-11"
                       autoFocus
                     />
-                    <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                       {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
@@ -259,7 +260,8 @@ export function InvitationPage() {
                 <Button
                   onClick={handleAuthAndAccept}
                   disabled={submitting || password.length < 6}
-                  className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 h-11 font-semibold"
+                  size="lg"
+                  className="w-full rounded-xl font-semibold shadow-md shadow-primary/15"
                 >
                   {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                   {mode === 'signup' ? 'Créer mon compte et rejoindre' : 'Se connecter et rejoindre'}

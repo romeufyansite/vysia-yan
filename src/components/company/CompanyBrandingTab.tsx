@@ -108,7 +108,7 @@ export function CompanyBrandingTab({ organization, onUpdate }: CompanyBrandingTa
   return (
     <div className="space-y-8">
       {/* Logo */}
-      <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
+      <section className="rounded-2xl border border-slate-200/70 bg-white p-6 shadow-[0_1px_3px_rgba(15,23,42,0.04)] ring-1 ring-slate-900/[0.02] sm:p-9">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
             <ImageIcon className="h-5 w-5 text-blue-600" />
@@ -120,7 +120,7 @@ export function CompanyBrandingTab({ organization, onUpdate }: CompanyBrandingTa
         </div>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-          <div className="w-32 h-32 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden">
+          <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50">
             {logoUrl ? (
               <img src={logoUrl} alt="Logo" className="max-w-full max-h-full object-contain" />
             ) : (
@@ -164,7 +164,7 @@ export function CompanyBrandingTab({ organization, onUpdate }: CompanyBrandingTa
       </section>
 
       {/* Website */}
-      <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
+      <section className="rounded-2xl border border-slate-200/70 bg-white p-6 shadow-[0_1px_3px_rgba(15,23,42,0.04)] ring-1 ring-slate-900/[0.02] sm:p-9">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
             <Globe className="h-5 w-5 text-blue-600" />
@@ -183,14 +183,14 @@ export function CompanyBrandingTab({ organization, onUpdate }: CompanyBrandingTa
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
               placeholder="https://www.votre-entreprise.com"
-              className="pl-9 h-11 rounded-xl border-gray-200 focus:border-blue-400 focus:ring-blue-100"
+              className="pl-10"
             />
           </div>
         </div>
       </section>
 
       {/* Brand colors */}
-      <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
+      <section className="rounded-2xl border border-slate-200/70 bg-white p-6 shadow-[0_1px_3px_rgba(15,23,42,0.04)] ring-1 ring-slate-900/[0.02] sm:p-9">
         <div className="flex items-center justify-between gap-3 mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
@@ -208,7 +208,7 @@ export function CompanyBrandingTab({ organization, onUpdate }: CompanyBrandingTa
         </div>
 
         {colors.length === 0 ? (
-          <div className="border-2 border-dashed border-gray-200 rounded-xl p-10 text-center">
+          <div className="rounded-xl border-2 border-dashed border-slate-200 p-10 text-center">
             <Palette className="h-10 w-10 text-gray-300 mx-auto mb-3" />
             <p className="text-sm text-gray-600 font-medium">Aucune couleur ajoutée</p>
             <p className="text-xs text-gray-400 mt-1">Définissez votre charte graphique pour personnaliser vos contenus</p>
@@ -218,7 +218,7 @@ export function CompanyBrandingTab({ organization, onUpdate }: CompanyBrandingTa
             {colors.map((color) => (
               <div
                 key={color.id}
-                className="group relative bg-gray-50 rounded-xl p-4 flex items-center gap-3 border border-gray-100 hover:border-gray-200 transition-colors"
+                className="group relative flex items-center gap-3 rounded-xl border border-slate-200/80 bg-slate-50/80 p-4 transition-colors hover:border-slate-300"
               >
                 <div
                   className="w-12 h-12 rounded-lg border border-black/5 shadow-sm shrink-0"
