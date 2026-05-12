@@ -15,6 +15,7 @@ import {
 import { organizationService, type Organization } from '@/services/organization.service';
 import { CompanyInfoTab } from '@/components/company/CompanyInfoTab';
 import { CompanyBrandingTab } from '@/components/company/CompanyBrandingTab';
+import { CompanyDescriptionTab } from '@/components/company/CompanyDescriptionTab';
 import { toast } from 'sonner';
 import { Lock } from 'lucide-react';
 
@@ -22,7 +23,7 @@ type Tab = 'info' | 'description' | 'branding' | 'products' | 'invoices' | 'inte
 
 const TABS: { id: Tab; label: string; icon: React.ElementType; soon?: boolean }[] = [
   { id: 'info', label: 'Informations', icon: Building2 },
-  { id: 'description', label: 'Description', icon: FileText, soon: true },
+  { id: 'description', label: 'Description', icon: FileText },
   { id: 'branding', label: 'Image de marque', icon: Palette },
   { id: 'products', label: 'Produits & Services', icon: ShoppingBag, soon: true },
   { id: 'invoices', label: 'Factures', icon: Receipt, soon: true },
@@ -119,7 +120,7 @@ export function CompanyEditorPage({ orgId }: CompanyEditorPageProps) {
           <ArrowLeft className="h-4 w-4" />
           Retour aux entreprises
         </button>
-        <h1 className="text-[1.625rem] font-semibold tracking-tight text-slate-900 sm:text-3xl sm:font-semibold">{organization.name}</h1>
+        <h1 className="text-[1.625rem] font-medium tracking-tight text-slate-900 sm:text-3xl">{organization.name}</h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500 sm:text-[15px]">
           Gérez les informations et l&apos;identité visuelle de votre entreprise
         </p>
@@ -214,11 +215,7 @@ export function CompanyEditorPage({ orgId }: CompanyEditorPageProps) {
             <CompanyInfoTab organization={organization} onUpdate={setOrganization} />
           )}
           {activeTab === 'description' && (
-            <ComingSoonPanel
-              label="Description"
-              icon={FileText}
-              description="Rédigez une présentation de votre entreprise. Ces informations seront utilisées par l'IA pour personnaliser vos contenus."
-            />
+            <CompanyDescriptionTab organization={organization} onUpdate={setOrganization} />
           )}
           {activeTab === 'branding' && (
             <CompanyBrandingTab organization={organization} onUpdate={setOrganization} />
