@@ -92,7 +92,7 @@ export function PlaylistScreenAssignmentsSection({
   return (
     <>
       <section className="space-y-3 border-t border-slate-100 pt-6">
-        <Label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">
           Diffusion sur les écrans
         </Label>
         <p className="text-xs text-slate-500 font-light leading-relaxed mb-4">
@@ -176,7 +176,7 @@ export function PlaylistScreenAssignmentsSection({
                       <span className="truncate font-medium text-slate-900">{s.name}</span>
                     </span>
                     {already ? (
-                      <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+                      <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-600">
                         Déjà associé
                       </span>
                     ) : (

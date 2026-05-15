@@ -8,13 +8,6 @@
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  font-family: Inter, system-ui, -apple-system, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -76,7 +69,14 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-normal text-foreground antialiased;
+    font-family:
+      Inter,
+      system-ui,
+      -apple-system,
+      sans-serif;
+    margin: 0;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -101,4 +101,33 @@ body {
 
 .animate-marquee {
   animation: marquee 20s linear infinite;
+}
+
+/** Pulsation synchronisée (va-et-vient) pour toutes les cartes skeleton d’une grille. */
+@keyframes skeleton-cards-pulse {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: scale(0.993);
+    filter: brightness(0.96);
+  }
+  50% {
+    opacity: 0.88;
+    transform: scale(1.007);
+    filter: brightness(1.038);
+  }
+}
+
+.skeleton-card-grid > * {
+  animation: skeleton-cards-pulse 1.65s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-card-grid > * {
+    animation: none;
+    opacity: 0.75;
+    transform: none;
+    filter: none;
+  }
 }

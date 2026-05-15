@@ -33,7 +33,7 @@ export function CompanyCard({
         <div className="p-5">
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
-            <h3 className="font-semibold text-sm text-gray-900 truncate pr-2">
+            <h3 className="truncate pr-2 text-sm font-medium text-gray-900">
               {organization.name}
             </h3>
             <DropdownMenu>

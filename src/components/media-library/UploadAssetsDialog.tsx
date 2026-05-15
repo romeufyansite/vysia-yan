@@ -46,7 +46,7 @@ export function UploadAssetsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <div className="mb-4">
-          <DialogTitle className="text-xl font-semibold">Télécharger des fichiers</DialogTitle>
+          <DialogTitle className="text-xl font-medium">Télécharger des fichiers</DialogTitle>
         </div>
 
         <div className="space-y-4">

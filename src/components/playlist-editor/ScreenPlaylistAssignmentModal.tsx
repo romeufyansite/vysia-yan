@@ -210,7 +210,7 @@ export function ScreenPlaylistAssignmentModal({
         >
           <div className="flex flex-col border-b border-slate-200 bg-white px-5 py-4 sm:px-6">
             <DialogHeader className="space-y-1 text-left">
-              <DialogTitle className="text-lg font-semibold text-slate-900 sm:text-xl">
+              <DialogTitle className="text-lg font-medium text-slate-900 sm:text-xl">
                 {loading ? 'Chargement…' : draft?.name ?? 'Écran'}
               </DialogTitle>
               <p className="text-sm text-slate-500">

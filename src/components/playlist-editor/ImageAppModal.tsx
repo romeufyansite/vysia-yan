@@ -99,7 +99,7 @@ export function ImageAppModal({
               <div className="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center">
                 <ImageIcon className="h-5 w-5 text-white" />
               </div>
-              <DialogTitle className="text-lg font-semibold">Image</DialogTitle>
+              <DialogTitle className="text-lg font-medium">Image</DialogTitle>
             </div>
 
             <div className="flex items-center gap-2">

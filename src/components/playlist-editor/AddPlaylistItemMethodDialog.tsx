@@ -110,7 +110,7 @@ export function AddPlaylistItemMethodDialog({
             />
 
             <DialogHeader className="relative space-y-1 text-center sm:text-center">
-              <DialogTitle className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-[1.7rem]">
+              <DialogTitle className="text-2xl font-medium tracking-tight text-slate-900 sm:text-[1.7rem]">
                 Ajouter un élément
               </DialogTitle>
               <DialogDescription className="sr-only">
@@ -213,7 +213,7 @@ export function AddPlaylistItemMethodDialog({
 
                     <div className="relative flex flex-col items-center gap-1.5">
                       <div className="flex flex-wrap items-center justify-center gap-2">
-                        <span className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
+                        <span className="text-lg font-medium tracking-tight text-slate-900 sm:text-xl">
                           {m.title}
                         </span>
                         {m.soon ? (
@@ -232,7 +232,7 @@ export function AddPlaylistItemMethodDialog({
                       </p>
                     </div>
 
-                    <span className="relative mt-auto inline-flex items-center gap-1 pt-4 text-xs font-semibold text-blue-600 opacity-0 transition-all duration-200 group-hover:opacity-100">
+                    <span className="relative mt-auto inline-flex items-center gap-1 pt-4 text-xs font-medium text-blue-600 opacity-0 transition-all duration-200 group-hover:opacity-100">
                       Ouvrir
                       <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </span>

@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { PlaylistSettingsDialog } from '@/components/playlists/PlaylistSettingsDialog';
 import { DeletePlaylistDialog } from '@/components/playlists/DeletePlaylistDialog';
 import { PlaylistCard } from '@/components/playlists/PlaylistCard';
+import { PlaylistCardSkeleton } from '@/components/playlists/PlaylistCardSkeleton';
 import { AddPlaylistCard } from '@/components/playlists/AddPlaylistCard';
 import { ManageGroupsDialog } from '@/components/playlists/ManageGroupsDialog';
 import { PlaylistPreviewModal } from '@/components/playlists/PlaylistPreviewModal';
@@ -19,6 +20,7 @@ import {
   type PlaylistsStatusFilter,
 } from '@/components/playlists/PlaylistsFiltersBar';
 import { useMembership } from '@/contexts/MembershipContext';
+import { CARD_GRID_SKELETON_MIN_MS, withMinimumElapsed } from '@/lib/card-grid-loading';
 
 const UNGROUPED_KEY = '__ungrouped__';
 
@@ -56,11 +58,15 @@ export function PlaylistsPage() {
 
   const loadData = async () => {
     try {
-      const [playlistsData, groupsData, usageRows] = await Promise.all([
-        playlistService.getAll(),
-        playlistGroupService.getAll(),
-        screenService.getPlaylistUsageSnapshot(),
-      ]);
+      const minSkeleton = loading ? CARD_GRID_SKELETON_MIN_MS : 0;
+      const [playlistsData, groupsData, usageRows] = await withMinimumElapsed(
+        Promise.all([
+          playlistService.getAll(),
+          playlistGroupService.getAll(),
+          screenService.getPlaylistUsageSnapshot(),
+        ]),
+        minSkeleton,
+      );
       setPlaylists(playlistsData);
       setGroups(groupsData);
       setPlaylistScreenUsage(buildPlaylistToScreensMap(usageRows));
@@ -234,7 +240,7 @@ export function PlaylistsPage() {
     <div className="h-full">
       <div className="border-b border-slate-200 bg-white px-4 sm:px-8 py-5">
         <div className="flex items-center justify-between gap-3">
-          <h1 className="text-2xl font-semibold text-slate-900">Playlists</h1>
+          <h1 className="text-2xl font-medium text-slate-900">Playlists</h1>
           {canManage && (
             <div className="flex items-center gap-2">
               <Button
@@ -261,7 +267,11 @@ export function PlaylistsPage() {
 
       <div className="p-4 sm:p-8">
         {loading ? (
-          <div className="text-center py-12 text-slate-500">Chargement...</div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4 skeleton-card-grid">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <PlaylistCardSkeleton key={i} />
+            ))}
+          </div>
         ) : (
           <div className="space-y-6">
             <PlaylistsFiltersBar

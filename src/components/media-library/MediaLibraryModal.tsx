@@ -210,7 +210,7 @@ export function MediaLibraryModal({
         <DialogContent className="max-w-6xl h-[90vh] overflow-hidden p-0">
           <div className="flex min-h-0 flex-col h-full">
             <div className="flex items-center justify-between px-6 py-4 border-b">
-              <DialogTitle className="text-xl font-semibold">Médiathèque</DialogTitle>
+              <DialogTitle className="text-xl font-medium">Médiathèque</DialogTitle>
 
               <div className="flex items-center gap-2">
                 {canManage && (
@@ -238,7 +238,7 @@ export function MediaLibraryModal({
 
             <div className="shrink-0 px-6 pt-4">
               <div className="flex items-center justify-between pb-4">
-                <h2 className="text-lg font-semibold">Fichiers</h2>
+                <h2 className="text-lg font-medium">Fichiers</h2>
 
                 <div className="flex items-center gap-4">
                   <div className="text-sm text-gray-600">

@@ -8,7 +8,12 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json"
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "deploy:function:extract-colors": "supabase functions deploy extract-website-colors --no-verify-jwt",
+    "deploy:function:extract-fonts": "supabase functions deploy extract-website-fonts --no-verify-jwt",
+    "deploy:function:platform-llm-admin": "supabase functions deploy platform-llm-admin",
+    "deploy:function:company-description-ai": "supabase functions deploy company-description-ai",
+    "functions:serve:extract-colors": "supabase functions serve --no-verify-jwt --env-file supabase/functions/.env"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

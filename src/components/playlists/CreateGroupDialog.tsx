@@ -48,7 +48,7 @@ export function CreateGroupDialog({ open, onOpenChange, onCreated }: CreateGroup
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[420px] rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-slate-900">
+          <DialogTitle className="text-xl font-medium text-slate-900">
             Nouveau groupe
           </DialogTitle>
           <DialogDescription className="text-sm text-slate-500">

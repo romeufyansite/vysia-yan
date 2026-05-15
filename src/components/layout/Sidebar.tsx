@@ -128,10 +128,10 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
         {!isCollapsed ? (
           <>
             <div className="flex items-center gap-2 flex-1">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-medium text-white">
                 V
               </div>
-              <span className="text-lg font-bold text-slate-800">Vysia</span>
+              <span className="text-lg font-medium text-slate-800">Vysia</span>
             </div>
             <Button
               variant="ghost"
@@ -144,7 +144,7 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
           </>
         ) : (
           <>
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-medium text-white">
               V
             </div>
             <Button
@@ -172,8 +172,8 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
               key={item.name}
               variant={isActive ? 'secondary' : 'ghost'}
               onClick={() => handleNavigate(item.path)}
-              className={`w-full ${isCollapsed ? 'justify-center px-0' : 'justify-start'} h-11 rounded-xl font-medium ${
-                isActive ? 'bg-slate-100 text-slate-900' : 'text-slate-600'
+              className={`w-full ${isCollapsed ? 'justify-center px-0' : 'justify-start'} h-11 rounded-xl ${
+                isActive ? 'bg-slate-100 font-medium text-slate-900' : 'font-normal text-slate-600'
               }`}
               title={isCollapsed ? item.name : undefined}
             >
@@ -187,7 +187,7 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
           <Button
             variant="ghost"
             onClick={() => setMediaLibraryOpen(true)}
-            className={`w-full ${isCollapsed ? 'justify-center px-0' : 'justify-start'} h-11 rounded-xl font-medium text-slate-600`}
+            className={`w-full ${isCollapsed ? 'justify-center px-0' : 'justify-start'} h-11 rounded-xl font-normal text-slate-600`}
             title={isCollapsed ? 'Média librairie' : undefined}
           >
             <Library className={`h-5 w-5 ${!isCollapsed ? 'mr-3' : ''}`} />
@@ -202,7 +202,7 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
             <CollapsibleTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-11 w-full justify-between rounded-xl font-medium text-slate-600"
+                className="h-11 w-full justify-between rounded-xl font-normal text-slate-600"
               >
                 <div className="flex items-center">
                   <Settings className="h-5 w-5 mr-3" />
@@ -222,7 +222,7 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
                     variant="ghost"
                     onClick={() => handleNavigate(item.path)}
                     className={`h-9 w-full justify-start rounded-lg text-sm ${
-                      isActive ? 'bg-slate-100 font-medium text-slate-900' : 'text-slate-600'
+                      isActive ? 'bg-slate-100 font-medium text-slate-900' : 'font-normal text-slate-600'
                     }`}
                   >
                     {item.label}
@@ -237,7 +237,7 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
           <Button
             variant="ghost"
             onClick={() => handleNavigate('/settings/profil')}
-            className="h-11 w-full justify-center rounded-xl px-0 font-medium text-slate-600"
+            className="h-11 w-full justify-center rounded-xl px-0 font-normal text-slate-600"
             title="Paramètres"
           >
             <Settings className="h-5 w-5" />
@@ -247,7 +247,7 @@ export function Sidebar({ isOpen, onToggle, onNavigate }: SidebarProps = {}) {
         <Button
           variant="ghost"
           onClick={handleSignOut}
-          className={`w-full ${isCollapsed ? 'justify-center px-0' : 'justify-start'} h-11 rounded-xl text-red-600 font-medium hover:text-red-700 hover:bg-red-50`}
+          className={`w-full ${isCollapsed ? 'justify-center px-0' : 'justify-start'} h-11 rounded-xl font-normal text-red-600 hover:text-red-700 hover:bg-red-50`}
           title={isCollapsed ? 'Déconnexion' : undefined}
         >
           <LogOut className={`h-5 w-5 ${!isCollapsed ? 'mr-3' : ''}`} />

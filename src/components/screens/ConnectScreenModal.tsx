@@ -144,12 +144,12 @@ export function ConnectScreenModal({
         <div className="relative px-10 py-8">
       
 
-          <DialogTitle className="text-2xl font-bold text-center mb-6">
+          <DialogTitle className="text-2xl font-medium text-center mb-6">
             Connecter un nouvel écran
           </DialogTitle>
 
           <div className="flex items-center justify-center gap-2 mb-8">
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
+            <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
               currentStep >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500' 
             }`}>
               1
@@ -157,7 +157,7 @@ export function ConnectScreenModal({
             <div className={`h-0.5 w-12 ${
               currentStep >= 2 ? 'bg-blue-600' : 'bg-gray-300'
             }`} />
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
+            <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
               currentStep >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'
             }`}>
               2
@@ -165,7 +165,7 @@ export function ConnectScreenModal({
             <div className={`h-0.5 w-12 ${
               currentStep >= 3 ? 'bg-blue-600' : 'bg-gray-300'
             }`} />
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
+            <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
               currentStep >= 3 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'
             }`}>
               3

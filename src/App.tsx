@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { MembershipProvider } from './contexts/MembershipContext';
+import { MembershipProvider, useMembership } from './contexts/MembershipContext';
 import { TeamPage } from './pages/TeamPage';
 import { InvitationPage } from './pages/InvitationPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { AdminAppGuard, ManagerAppGuard } from './components/auth/PlatformAppGuard';
 import { MainLayout } from './components/layout/MainLayout';
+import { AdminMainLayout } from './components/layout/AdminMainLayout';
 import { ScreensPage } from './pages/ScreensPage';
 import { ScreenEditorPage } from './pages/ScreenEditorPage';
 import { PlaylistsPage } from './pages/PlaylistsPage';
@@ -16,10 +18,14 @@ import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { CompanyPage } from './pages/CompanyPage';
 import { CompanyEditorPage } from './pages/CompanyEditorPage';
+import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
+import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
+import { AdminAiManagementPage } from './pages/admin/AdminAiManagementPage';
 import { Toaster } from './components/ui/sonner';
 
 function AppContent() {
   const { user, loading } = useAuth();
+  const { membership, loading: membershipLoading } = useMembership();
   const [route, setRoute] = useState<{ page: string; params?: Record<string, string> }>({
     page: 'screens',
   });
@@ -51,6 +57,17 @@ function AppContent() {
       } else if (path === '/login') {
         console.log('→ Setting route to login');
         setRoute({ page: 'login' });
+      } else if (
+        path === '/admin' ||
+        path === '/admin/dashboard' ||
+        path.startsWith('/admin/dashboard?') ||
+        path.startsWith('/admin?')
+      ) {
+        setRoute({ page: 'admin-dashboard' });
+      } else if (path === '/admin/settings/gestion-ia' || path.startsWith('/admin/settings/gestion-ia?')) {
+        setRoute({ page: 'admin-settings-ai' });
+      } else if (path === '/admin/settings' || path.startsWith('/admin/settings?')) {
+        setRoute({ page: 'admin-settings' });
       } else if (path === '/forgot-password') {
         console.log('→ Setting route to forgot-password');
         setRoute({ page: 'forgot-password' });
@@ -104,7 +121,17 @@ function AppContent() {
 
   if (route.page === 'login') {
     if (user) {
-      window.location.hash = '/screens';
+      if (membershipLoading) {
+        return (
+          <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-12 h-12 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600">Chargement...</p>
+            </div>
+          </div>
+        );
+      }
+      window.location.hash = membership?.platformRole === 'admin' ? '/admin' : '/screens';
       return null;
     }
     return (
@@ -117,7 +144,17 @@ function AppContent() {
 
   if (route.page === 'forgot-password') {
     if (user) {
-      window.location.hash = '/screens';
+      if (membershipLoading) {
+        return (
+          <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-12 h-12 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600">Chargement...</p>
+            </div>
+          </div>
+        );
+      }
+      window.location.hash = membership?.platformRole === 'admin' ? '/admin' : '/screens';
       return null;
     }
     return (
@@ -146,11 +183,58 @@ function AppContent() {
     );
   }
 
+  if (route.page === 'admin-dashboard') {
+    return (
+      <>
+        <ProtectedRoute>
+          <AdminAppGuard>
+            <AdminMainLayout>
+              <AdminDashboardPage />
+            </AdminMainLayout>
+          </AdminAppGuard>
+        </ProtectedRoute>
+        <Toaster />
+      </>
+    );
+  }
+
+  if (route.page === 'admin-settings-ai') {
+    return (
+      <>
+        <ProtectedRoute>
+          <AdminAppGuard>
+            <AdminMainLayout>
+              <AdminAiManagementPage />
+            </AdminMainLayout>
+          </AdminAppGuard>
+        </ProtectedRoute>
+        <Toaster />
+      </>
+    );
+  }
+
+  if (route.page === 'admin-settings') {
+    return (
+      <>
+        <ProtectedRoute>
+          <AdminAppGuard>
+            <AdminMainLayout>
+              <AdminSettingsPage />
+            </AdminMainLayout>
+          </AdminAppGuard>
+        </ProtectedRoute>
+        <Toaster />
+      </>
+    );
+  }
+
   if (route.page === 'screen-editor' && route.params?.screenId) {
     return (
       <>
         <ProtectedRoute>
-          <ScreenEditorPage screenId={route.params.screenId} />
+          <ManagerAppGuard>
+            <ScreenEditorPage screenId={route.params.screenId} />
+          </ManagerAppGuard>
         </ProtectedRoute>
         <Toaster />
       </>
@@ -161,9 +245,11 @@ function AppContent() {
     return (
       <>
         <ProtectedRoute>
-          <MainLayout>
-            <PlaylistsPage />
-          </MainLayout>
+          <ManagerAppGuard>
+            <MainLayout>
+              <PlaylistsPage />
+            </MainLayout>
+          </ManagerAppGuard>
         </ProtectedRoute>
         <Toaster />
       </>
@@ -174,7 +260,9 @@ function AppContent() {
     return (
       <>
         <ProtectedRoute>
-          <PlaylistEditorPage playlistId={route.params.playlistId} />
+          <ManagerAppGuard>
+            <PlaylistEditorPage playlistId={route.params.playlistId} />
+          </ManagerAppGuard>
         </ProtectedRoute>
         <Toaster />
       </>
@@ -185,9 +273,11 @@ function AppContent() {
     return (
       <>
         <ProtectedRoute>
-          <MainLayout>
-            <ProfilePage />
-          </MainLayout>
+          <ManagerAppGuard>
+            <MainLayout>
+              <ProfilePage />
+            </MainLayout>
+          </ManagerAppGuard>
         </ProtectedRoute>
         <Toaster />
       </>
@@ -207,9 +297,11 @@ function AppContent() {
     return (
       <>
         <ProtectedRoute>
-          <MainLayout>
-            <TeamPage />
-          </MainLayout>
+          <ManagerAppGuard>
+            <MainLayout>
+              <TeamPage />
+            </MainLayout>
+          </ManagerAppGuard>
         </ProtectedRoute>
         <Toaster />
       </>
@@ -220,9 +312,11 @@ function AppContent() {
     return (
       <>
         <ProtectedRoute>
-          <MainLayout>
-            <CompanyPage />
-          </MainLayout>
+          <ManagerAppGuard>
+            <MainLayout>
+              <CompanyPage />
+            </MainLayout>
+          </ManagerAppGuard>
         </ProtectedRoute>
         <Toaster />
       </>
@@ -233,9 +327,11 @@ function AppContent() {
     return (
       <>
         <ProtectedRoute>
-          <MainLayout>
-            <CompanyEditorPage orgId={route.params.orgId} />
-          </MainLayout>
+          <ManagerAppGuard>
+            <MainLayout>
+              <CompanyEditorPage orgId={route.params.orgId} />
+            </MainLayout>
+          </ManagerAppGuard>
         </ProtectedRoute>
         <Toaster />
       </>
@@ -245,9 +341,11 @@ function AppContent() {
   return (
     <>
       <ProtectedRoute>
-        <MainLayout>
-          <ScreensPage />
-        </MainLayout>
+        <ManagerAppGuard>
+          <MainLayout>
+            <ScreensPage />
+          </MainLayout>
+        </ManagerAppGuard>
       </ProtectedRoute>
       <Toaster />
     </>

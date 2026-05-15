@@ -179,18 +179,18 @@ export function ProfilePage() {
   return (
     <div className="mx-auto min-h-full max-w-2xl px-6 py-12">
       <div className="mb-10">
-        <h1 className="text-[1.625rem] font-semibold tracking-tight text-slate-900 sm:text-3xl">Profil</h1>
+        <h1 className="text-[1.625rem] font-medium tracking-tight text-slate-900 sm:text-3xl">Profil</h1>
         <p className="mt-2 text-[15px] leading-relaxed text-slate-500">Gérez vos informations personnelles</p>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.04)] ring-1 ring-slate-900/[0.02]">
         {/* Avatar header */}
         <div className="flex items-center gap-5 border-b border-slate-100 bg-gradient-to-br from-slate-50 to-slate-100/80 px-8 py-9">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xl font-bold shadow-md select-none">
+          <div className="flex h-16 w-16 select-none items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-xl font-medium text-white shadow-md">
             {initials}
           </div>
           <div>
-            <p className="text-lg font-semibold text-slate-900">
+            <p className="text-lg font-medium text-slate-900">
               {firstName || lastName ? `${firstName} ${lastName}`.trim() : 'Votre nom'}
             </p>
             <p className="text-sm text-slate-500">{user?.email}</p>
@@ -309,7 +309,7 @@ export function ProfilePage() {
 
       <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.04)] ring-1 ring-slate-900/[0.02]">
         <div className="border-b border-slate-100 bg-gradient-to-br from-slate-50 to-slate-100/80 px-8 py-7">
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">Sécurité du compte</h2>
+          <h2 className="text-lg font-medium tracking-tight text-slate-900">Sécurité du compte</h2>
           <p className="mt-1 text-sm text-slate-500">Modifiez votre mot de passe en toute sécurité</p>
         </div>
 

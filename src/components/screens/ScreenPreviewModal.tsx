@@ -160,7 +160,7 @@ export function ScreenPreviewModal({ screen, open, onClose }: ScreenPreviewModal
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 bg-black/80 backdrop-blur-sm border-b border-white/10 z-10">
           <div className="flex items-center gap-3">
-            <span className="text-white font-semibold text-sm">{screen.name}</span>
+            <span className="text-white font-medium text-sm">{screen.name}</span>
             <span className="text-white/40 text-xs">
               {orientation === 'portrait' ? 'Portrait' : 'Paysage'} • {template}
             </span>

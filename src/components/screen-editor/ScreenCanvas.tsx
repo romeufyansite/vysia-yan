@@ -261,8 +261,8 @@ function ZoneSlot({
           <div className="absolute inset-0 bg-slate-900/60" />
         </div>
         <ListMusic className="h-10 w-10 text-white/75 shrink-0 relative z-10" />
-        <div className="text-xs font-semibold uppercase tracking-wide text-white/45 relative z-10">{zoneLabel}</div>
-        <div className="text-sm font-semibold leading-tight line-clamp-2 relative z-10">{assigned.name}</div>
+        <div className="text-xs font-medium uppercase tracking-wide text-white/45 relative z-10">{zoneLabel}</div>
+        <div className="text-sm font-medium leading-tight line-clamp-2 relative z-10">{assigned.name}</div>
         {canAssign && (
           <Button
             variant="secondary"
@@ -338,7 +338,7 @@ function ZoneSlot({
       >
         <Plus className="h-8 w-8" />
       </Button>
-      <span className="text-[10px] font-semibold uppercase tracking-wide text-white/35">
+      <span className="text-[10px] font-medium uppercase tracking-wide text-white/35">
         {zoneLabel}
       </span>
     </div>

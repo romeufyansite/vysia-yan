@@ -242,7 +242,7 @@ export function PlaylistSelectorModal({
                     >
                       <PlaylistThumbnail playlistId={playlist.id} color={playlist.color} />
                       <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-slate-900 text-sm leading-tight truncate">
+                        <p className="font-medium text-slate-900 text-sm leading-tight truncate">
                           {playlist.name}
                         </p>
                         {group && (

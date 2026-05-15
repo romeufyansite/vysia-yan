@@ -12,7 +12,7 @@ export function AppsSidebar({ onAddImageApp, onClose }: AppsSidebarProps) {
     <aside className="flex h-full min-h-0 w-full shrink-0 flex-col border-t border-slate-200 bg-white shadow-sm lg:w-[380px] lg:border-l lg:border-t-0 xl:w-[420px]">
       <div className="p-4">
         <div className="mb-4 flex items-center justify-between gap-2">
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">Bibliothèque d&apos;apps</h2>
+          <h2 className="text-lg font-medium tracking-tight text-slate-900">Bibliothèque d&apos;apps</h2>
           {onClose && (
             <Button
               type="button"
@@ -58,7 +58,7 @@ export function AppsSidebar({ onAddImageApp, onClose }: AppsSidebarProps) {
           </button>
 
           <div className="pt-4 pb-2">
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+            <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">
               Prochainement
             </div>
           </div>

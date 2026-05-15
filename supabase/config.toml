@@ -1,0 +1,14 @@
+# JWT is still enforced in the Edge Function handler (supabase.auth.getUser()).
+# Important: redeploy must apply this — safest is CLI flag `--no-verify-jwt` alongside this file.
+
+[functions.extract-website-colors]
+verify_jwt = false
+
+[functions.extract-website-fonts]
+verify_jwt = false
+
+[functions.platform-llm-admin]
+verify_jwt = true
+
+[functions.company-description-ai]
+verify_jwt = true

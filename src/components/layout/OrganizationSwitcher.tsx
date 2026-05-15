@@ -84,7 +84,7 @@ export function OrganizationSwitcher({ collapsed = false }: OrganizationSwitcher
           }`}
           title={collapsed ? activeOrg?.name : undefined}
         >
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-xs shrink-0 overflow-hidden">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-xs font-medium text-white">
             {activeOrg?.logo_url ? (
               <img src={activeOrg.logo_url} alt="" className="w-full h-full object-cover" />
             ) : (
@@ -93,7 +93,7 @@ export function OrganizationSwitcher({ collapsed = false }: OrganizationSwitcher
           </div>
           {!collapsed && (
             <>
-              <span className="flex-1 truncate text-left text-sm font-semibold text-slate-900">
+              <span className="flex-1 truncate text-left text-sm font-medium text-slate-900">
                 {activeOrg?.name || 'Aucune entreprise'}
               </span>
               <ChevronsUpDown className="h-4 w-4 shrink-0 text-slate-400" />
@@ -106,7 +106,7 @@ export function OrganizationSwitcher({ collapsed = false }: OrganizationSwitcher
         className="w-56 rounded-xl p-1"
         sideOffset={6}
       >
-        <div className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+        <div className="px-2 py-1.5 text-[11px] font-normal uppercase tracking-[0.12em] text-slate-400">
           Entreprises
         </div>
         {orgs.length === 0 && (
@@ -120,7 +120,7 @@ export function OrganizationSwitcher({ collapsed = false }: OrganizationSwitcher
               onClick={() => handleSelect(org.id)}
               className="rounded-lg flex items-center gap-2 cursor-pointer"
             >
-              <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-[10px] font-semibold shrink-0 overflow-hidden">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-md bg-gradient-to-br from-blue-500 to-blue-600 text-[10px] font-medium text-white">
                 {org.logo_url ? (
                   <img src={org.logo_url} alt="" className="w-full h-full object-cover" />
                 ) : (

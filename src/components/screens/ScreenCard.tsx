@@ -152,7 +152,7 @@ export function ScreenCard({
       <CardContent className="relative p-0">
         <div className="screen-card-overlay pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center rounded-2xl bg-slate-100/65 opacity-0 backdrop-blur-[3px] transition-opacity duration-200">
           <Settings className="mb-2 h-10 w-10 text-slate-600" />
-          <span className="text-sm font-medium text-slate-700">Modifier</span>
+          <span className="text-sm font-normal text-slate-700">Modifier</span>
         </div>
 
         <div className="relative z-10 px-1.5 pb-0 pt-2">
@@ -167,9 +167,9 @@ export function ScreenCard({
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex min-w-0 items-center gap-2 text-left transition-opacity hover:opacity-80">
-                      <h3 className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900">{screen.name}</h3>
+                      <h3 className="min-w-0 flex-1 truncate text-sm font-medium text-slate-900">{screen.name}</h3>
                       <span
-                        className={`shrink-0 text-xs font-medium ${
+                        className={`shrink-0 text-xs font-normal ${
                           screen.status === 'online' ? 'text-emerald-600' : 'text-red-500'
                         }`}
                       >
@@ -187,7 +187,7 @@ export function ScreenCard({
                 </DropdownMenuContent>
               </DropdownMenu>
 
-                <p className="mt-0.5 pb-1 text-[8px] font-medium uppercase leading-tight tracking-wide text-slate-500">
+                <p className="mt-0.5 pb-1 text-[8px] font-normal uppercase leading-tight tracking-wide text-slate-500">
                   {getDeviceTypeLabel(screen.device_type)}
                 </p>
               </div>

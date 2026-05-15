@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { ScreenCard } from '@/components/screens/ScreenCard';
+import { ScreenCardSkeleton } from '@/components/screens/ScreenCardSkeleton';
 import { AddScreenCard } from '@/components/screens/AddScreenCard';
 import { ConnectScreenModal } from '@/components/screens/ConnectScreenModal';
 import { BuyScreensModal } from '@/components/screens/BuyScreensModal';
@@ -24,6 +25,7 @@ import { screenGroupService } from '@/services/screen-group.service';
 import { useMembership } from '@/contexts/MembershipContext';
 import type { Screen, Playlist, ScreenGroup } from '@/types';
 import { toast } from 'sonner';
+import { CARD_GRID_SKELETON_MIN_MS, withMinimumElapsed } from '@/lib/card-grid-loading';
 
 export function ScreensPage() {
   const [screens, setScreens] = useState<Screen[]>([]);
@@ -41,6 +43,7 @@ export function ScreensPage() {
   const [groupToEdit, setGroupToEdit] = useState<ScreenGroup | null>(null);
   const [groupToDelete, setGroupToDelete] = useState<ScreenGroup | null>(null);
   const [selectOpen, setSelectOpen] = useState(false);
+  const [cardsLoading, setCardsLoading] = useState(true);
   const { can } = useMembership();
   const canManage = can('screens', 'manage');
   const denyManage = () => toast.error("Vous n'avez pas les droits pour gérer les écrans.");
@@ -52,11 +55,15 @@ export function ScreensPage() {
   const loadData = async () => {
     try {
       console.log('[ScreensPage] Loading data...');
-      const [screensData, playlistsData, groupsData] = await Promise.all([
-        screenService.getAll(),
-        playlistService.getAll(),
-        screenGroupService.getAll(),
-      ]);
+      const minSkeleton = cardsLoading ? CARD_GRID_SKELETON_MIN_MS : 0;
+      const [screensData, playlistsData, groupsData] = await withMinimumElapsed(
+        Promise.all([
+          screenService.getAll(),
+          playlistService.getAll(),
+          screenGroupService.getAll(),
+        ]),
+        minSkeleton,
+      );
       console.log('[ScreensPage] Data loaded:', { screens: screensData.length, playlists: playlistsData.length, groups: groupsData.length });
       setScreens(screensData);
       setPlaylists(playlistsData);
@@ -64,6 +71,8 @@ export function ScreensPage() {
     } catch (error) {
       console.error('[ScreensPage] Error loading data:', error);
       toast.error('Erreur lors du chargement des données');
+    } finally {
+      setCardsLoading(false);
     }
   };
 
@@ -186,7 +195,7 @@ export function ScreensPage() {
     <div className="h-full">
       <div className="border-b border-slate-200/80 bg-white px-8 py-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Écrans</h1>
+          <h1 className="text-2xl font-medium tracking-tight text-slate-900">Écrans</h1>
           <div className="flex gap-3">
             <Button variant="outline" className="h-11 gap-2 rounded-xl">
               <Filter className="h-4 w-4" />
@@ -272,18 +281,26 @@ export function ScreensPage() {
           </Select>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredScreens.map((screen) => (
-            <ScreenCard
-              key={screen.id}
-              screen={screen}
-              onStatusChange={(status) => handleStatusChange(screen.id, status)}
-              onPreview={() => toast.info('Aperçu non implémenté')}
-              onEdit={() => (window.location.hash = `/screens/${screen.id}`)}
-              onDelete={canManage ? () => openDeleteDialog(screen.id) : () => denyManage()}
-            />
-          ))}
-          {canManage && <AddScreenCard onClick={() => setConnectModalOpen(true)} />}
+        <div
+          className={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4${cardsLoading ? ' skeleton-card-grid' : ''}`}
+        >
+          {cardsLoading
+            ? Array.from({ length: 8 }).map((_, i) => <ScreenCardSkeleton key={i} />)
+            : (
+                <>
+                  {filteredScreens.map((screen) => (
+                    <ScreenCard
+                      key={screen.id}
+                      screen={screen}
+                      onStatusChange={(status) => handleStatusChange(screen.id, status)}
+                      onPreview={() => toast.info('Aperçu non implémenté')}
+                      onEdit={() => (window.location.hash = `/screens/${screen.id}`)}
+                      onDelete={canManage ? () => openDeleteDialog(screen.id) : () => denyManage()}
+                    />
+                  ))}
+                  {canManage && <AddScreenCard onClick={() => setConnectModalOpen(true)} />}
+                </>
+              )}
         </div>
       </div>
 
@@ -326,7 +343,7 @@ export function ScreensPage() {
         onConfirm={handleDeleteScreen}
       />
 
-      {screens.length === 0 && (
+      {!cardsLoading && screens.length === 0 && (
         <div className="fixed bottom-8 left-1/2 flex -translate-x-1/2 transform items-center gap-4 rounded-2xl border border-slate-200/80 bg-white px-6 py-4 shadow-lg shadow-slate-900/10 ring-1 ring-slate-900/[0.04]">
           <span className="text-sm text-slate-700">Configurez votre premier écran</span>
           <Button className="rounded-xl shadow-md shadow-primary/15" onClick={() => window.open('/#/player', '_blank')}>

@@ -19,8 +19,8 @@ export function PlaylistEditorMethodPanel({
     <aside className="flex h-full min-h-0 w-full shrink-0 flex-col border-t border-slate-200 bg-white shadow-sm lg:w-[380px] lg:border-l lg:border-t-0 xl:w-[420px]">
       <div className="flex items-start justify-between gap-3 border-b border-slate-100 p-5 lg:p-6">
         <div className="min-w-0 space-y-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">{accentLabel}</p>
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">{title}</h2>
+          <p className="text-xs font-medium uppercase tracking-wide text-blue-600">{accentLabel}</p>
+          <h2 className="text-lg font-medium tracking-tight text-slate-900">{title}</h2>
         </div>
         <Button
           type="button"

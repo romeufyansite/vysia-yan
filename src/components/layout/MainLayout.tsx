@@ -59,10 +59,10 @@ export function MainLayout({ children }: MainLayoutProps) {
             >
               <Menu className="h-5 w-5 text-gray-700" />
             </Button>
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-xs">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-xs font-medium text-white">
               V
             </div>
-            <span className="font-bold text-slate-800">Vysia</span>
+            <span className="font-medium text-slate-800">Vysia</span>
           </div>
         )}
         {children}

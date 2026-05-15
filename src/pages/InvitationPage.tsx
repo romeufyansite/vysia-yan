@@ -156,10 +156,10 @@ export function InvitationPage() {
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-4 shadow-md">
               <Building2 className="h-7 w-7 text-white" />
             </div>
-            <h1 className="text-xl font-semibold tracking-tight text-slate-900">Invitation à rejoindre</h1>
+            <h1 className="text-xl font-medium tracking-tight text-slate-900">Invitation à rejoindre</h1>
             {preview && (
               <div className="mt-2">
-                <p className="text-sm font-semibold text-slate-800">{orgLabel}</p>
+                <p className="text-sm font-medium text-slate-800">{orgLabel}</p>
                 {preview.inviter_email && (
                   <p className="mt-0.5 text-xs text-slate-500">invité par {preview.inviter_email}</p>
                 )}
@@ -226,7 +226,7 @@ export function InvitationPage() {
                     onClick={() => doAccept(password)}
                     disabled={submitting || password.length < 6}
                     size="lg"
-                    className="w-full rounded-xl font-semibold shadow-md shadow-primary/15"
+                    className="w-full rounded-xl font-medium shadow-md shadow-primary/15"
                   >
                     {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                     Définir mon mot de passe et rejoindre
@@ -261,7 +261,7 @@ export function InvitationPage() {
                   onClick={handleAuthAndAccept}
                   disabled={submitting || password.length < 6}
                   size="lg"
-                  className="w-full rounded-xl font-semibold shadow-md shadow-primary/15"
+                  className="w-full rounded-xl font-medium shadow-md shadow-primary/15"
                 >
                   {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                   {mode === 'signup' ? 'Créer mon compte et rejoindre' : 'Se connecter et rejoindre'}

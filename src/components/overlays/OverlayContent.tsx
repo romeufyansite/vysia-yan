@@ -345,7 +345,7 @@ export function OverlayContent({ overlay }: { overlay: Overlay }) {
       {overlay.type === 'clock' && (
         <div className={`px-5 py-3 ${fontSize}`}>
           {config.style === 'minimal' ? (
-            <div className="font-semibold tabular-nums">
+            <div className="font-medium tabular-nums">
               {time.toLocaleTimeString('fr-FR', {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -356,7 +356,7 @@ export function OverlayContent({ overlay }: { overlay: Overlay }) {
             <div className="flex items-center gap-2">
               <Clock className="h-5 w-5 opacity-70" />
               <div>
-                <div className="font-semibold tabular-nums">
+                <div className="font-medium tabular-nums">
                   {time.toLocaleTimeString('fr-FR', {
                     hour: '2-digit',
                     minute: '2-digit',
@@ -415,7 +415,7 @@ export function OverlayContent({ overlay }: { overlay: Overlay }) {
             config.style === 'minimal' ? (
               <div className="flex items-center gap-2">
                 <WeatherIcon icon={weather.icon} className="h-5 w-5" />
-                <span className="font-semibold">
+                <span className="font-medium">
                   {weatherService.convertTemperature(weather.temperature, config.unit || 'celsius')}°
                 </span>
               </div>
@@ -423,7 +423,7 @@ export function OverlayContent({ overlay }: { overlay: Overlay }) {
               <div className="flex items-center gap-3">
                 <WeatherIcon icon={weather.icon} className="h-8 w-8" />
                 <div>
-                  <div className="font-semibold">
+                  <div className="font-medium">
                     {weather.city} · {weatherService.convertTemperature(weather.temperature, config.unit || 'celsius')}°
                     {config.unit === 'fahrenheit' ? 'F' : 'C'}
                   </div>

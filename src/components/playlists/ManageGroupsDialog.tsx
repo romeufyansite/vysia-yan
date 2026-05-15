@@ -100,7 +100,7 @@ export function ManageGroupsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[480px] rounded-2xl max-h-[80vh] overflow-hidden flex flex-col">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-slate-900">
+          <DialogTitle className="text-xl font-medium text-slate-900">
           Catégories
           </DialogTitle>
           <DialogDescription className="text-sm text-slate-500">

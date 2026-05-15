@@ -31,7 +31,7 @@ export function ConnectScreenStep1({ selectedType, onSelectType }: ConnectScreen
               className="w-full h-24 mx-auto object-contain"
             />
           </div>
-          <div className="text-sm font-semibold mb-2">TV CONNECTÉE</div>
+          <div className="text-sm font-medium mb-2">TV CONNECTÉE</div>
           <div className="flex items-center justify-center gap-2 mb-2">
             <img
               src="https://zaaspdrcjlcriazvwgra.supabase.co/storage/v1/object/public/media/Samsung-Smart-TV-Logo-2015.png"
@@ -64,7 +64,7 @@ export function ConnectScreenStep1({ selectedType, onSelectType }: ConnectScreen
               className="w-full h-24 mx-auto object-contain"
             />
           </div>
-          <div className="text-sm font-semibold mb-2">NAVIGATEUR WEB</div>
+          <div className="text-sm font-medium mb-2">NAVIGATEUR WEB</div>
           <div className="flex items-center justify-center">
             <img
               src="https://zaaspdrcjlcriazvwgra.supabase.co/storage/v1/object/public/media/logos-navigateurs.png"
@@ -92,7 +92,7 @@ export function ConnectScreenStep1({ selectedType, onSelectType }: ConnectScreen
               className="w-full h-24 mx-auto object-contain"
             />
           </div>
-          <div className="text-sm font-semibold mb-2">TV NON-CONNECTÉE</div>
+          <div className="text-sm font-medium mb-2">TV NON-CONNECTÉE</div>
           <div className="flex items-center justify-center gap-2">
             <img
               src="https://zaaspdrcjlcriazvwgra.supabase.co/storage/v1/object/public/media/pas-de-signal-wi-fi-3d-icon-png-download-5113956.png"
@@ -120,7 +120,7 @@ export function ConnectScreenStep1({ selectedType, onSelectType }: ConnectScreen
                   className="w-16 h-16 rounded-lg"
                 />
                <div>
-  <h4 className="font-semibold text-lg mb-4">Télécharger l'application "Vysia Playeur"</h4>
+  <h4 className="font-medium text-lg mb-4">Télécharger l'application "Vysia Playeur"</h4>
 
   <ol className="text-sm text-gray-600 font-extralight space-y-2 mb-4">
     <li><span className="font-extralight text-lg text-blue-500">1 -</span> Ouvrir le Play Store de votre TV</li>
@@ -150,7 +150,7 @@ export function ConnectScreenStep1({ selectedType, onSelectType }: ConnectScreen
                   className="w-16 h-16"
                 />
                 <div>
-                  <h4 className="font-semibold text-lg mb-4">Afficher le player Web "Vysia Player"</h4>
+                  <h4 className="font-medium text-lg mb-4">Afficher le player Web "Vysia Player"</h4>
                   <ol className="text-sm text-gray-600 font-extralight space-y-2 mb-4">
     <li><span className="font-extralight text-lg text-blue-500">1 - </span>
                       Ouvrir votre navigateur Web sur votre écran et saisir l'adresse{' '}

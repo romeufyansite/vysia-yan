@@ -41,8 +41,8 @@ export function PlaylistCard({
           type="button"
           className="flex min-w-0 items-center gap-2 text-left transition-opacity hover:opacity-80"
         >
-          <h3 className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900">{playlist.name}</h3>
-          <span className="shrink-0 text-xs font-medium text-emerald-600">(affecté)</span>
+                      <h3 className="min-w-0 flex-1 truncate text-sm font-medium text-slate-900">{playlist.name}</h3>
+          <span className="shrink-0 text-xs font-normal text-emerald-600">(affecté)</span>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="rounded-xl">
@@ -61,8 +61,8 @@ export function PlaylistCard({
     </DropdownMenu>
   ) : (
     <div className="flex min-w-0 items-center gap-2">
-      <h3 className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900">{playlist.name}</h3>
-      <span className="shrink-0 text-xs font-medium text-red-500">(non affecté)</span>
+                      <h3 className="min-w-0 flex-1 truncate text-sm font-medium text-slate-900">{playlist.name}</h3>
+      <span className="shrink-0 text-xs font-normal text-red-500">(non affecté)</span>
     </div>
   );
 
@@ -71,7 +71,7 @@ export function PlaylistCard({
       <CardContent className="relative p-0">
         <div className="playlist-card-overlay pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center rounded-2xl bg-slate-100/65 opacity-0 backdrop-blur-[3px] transition-opacity duration-200">
           <Settings className="mb-2 h-10 w-10 text-slate-600" />
-          <span className="text-sm font-medium text-slate-700">Modifier</span>
+          <span className="text-sm font-normal text-slate-700">Modifier</span>
         </div>
 
         <div className="relative z-10 px-1 pb-0 pt-2.5">
@@ -85,7 +85,7 @@ export function PlaylistCard({
               <div className="min-w-0 flex-1">
                 {titleAndStatus}
                 <p
-                  className={`mt-0.5 pb-1 text-[8px] font-medium leading-tight tracking-wide text-slate-500 uppercase font-light ${
+                  className={`mt-0.5 pb-1 text-[8px] font-normal leading-tight tracking-wide text-slate-500 ${
                     groupName?.trim() ? 'uppercase' : ''
                   }`}
                 >
@@ -164,7 +164,7 @@ export function PlaylistCard({
                 </div>
               )}
               
-              <span className="absolute top-1.5 right-1.5 z-10 inline-flex items-center gap-1 rounded-full bg-black/30 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
+              <span className="absolute top-1.5 right-1.5 z-10 inline-flex items-center gap-1 rounded-full bg-black/30 px-1.5 py-0.5 text-[10px] font-normal text-white backdrop-blur-sm">
                 {playlist.orientation === 'portrait' ? (
                   <Smartphone className="h-3 w-3" />
                 ) : (

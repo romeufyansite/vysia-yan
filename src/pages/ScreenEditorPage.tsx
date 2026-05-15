@@ -153,7 +153,7 @@ export function ScreenEditorPage({ screenId }: ScreenEditorPageProps) {
           </Button>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="text-base sm:text-lg font-semibold text-slate-900 truncate">
+              <h1 className="text-base sm:text-lg font-medium text-slate-900 truncate">
                 {screen.name}
               </h1>
               <div

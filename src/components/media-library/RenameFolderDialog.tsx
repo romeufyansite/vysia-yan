@@ -39,7 +39,7 @@ export function RenameFolderDialog({
     <Dialog open={!!folder} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <div className="mb-4">
-          <DialogTitle className="text-xl font-semibold">Renommer le dossier</DialogTitle>
+          <DialogTitle className="text-xl font-medium">Renommer le dossier</DialogTitle>
         </div>
 
         <div className="space-y-4">

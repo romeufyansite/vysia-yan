@@ -32,7 +32,7 @@ export function CreateFolderDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <div className="mb-4">
-          <DialogTitle className="text-xl font-semibold">Nouveau dossier</DialogTitle>
+          <DialogTitle className="text-xl font-medium">Nouveau dossier</DialogTitle>
         </div>
 
         <div className="space-y-4">

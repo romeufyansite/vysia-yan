@@ -303,7 +303,7 @@ export function PlaylistEditorPage({ playlistId }: PlaylistEditorPageProps) {
             <ChevronLeft className="h-5 w-5" />
           </Button>
           <div className="min-w-0">
-            <h1 className="truncate text-base font-semibold text-slate-900 sm:text-lg">{headerTitle}</h1>
+            <h1 className="truncate text-base font-medium text-slate-900 sm:text-lg">{headerTitle}</h1>
             <p className="text-xs text-slate-500 sm:text-sm">Paramètres playlist</p>
           </div>
         </div>

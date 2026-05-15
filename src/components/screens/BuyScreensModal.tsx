@@ -34,11 +34,11 @@ export function BuyScreensModal({ open, onOpenChange }: BuyScreensModalProps) {
       <DialogContent className="overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-b from-slate-50 to-white p-0 sm:max-w-[900px]">
         <div className="relative">
           <div className="px-8 py-6">
-            <h2 className="text-3xl font-bold text-center mb-8">Acheter des écrans</h2>
+            <h2 className="text-3xl font-medium text-center mb-8">Acheter des écrans</h2>
 
             <div className="grid grid-cols-2 gap-5">
               <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
-                <h3 className="text-xl font-semibold text-center mb-8">Nombre d'écrans</h3>
+                <h3 className="text-xl font-medium text-center mb-8">Nombre d'écrans</h3>
 
                 <div className="flex items-center justify-center gap-3 mb-8">
                   <Button
@@ -94,7 +94,7 @@ export function BuyScreensModal({ open, onOpenChange }: BuyScreensModalProps) {
               </div>
 
               <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
-                <h3 className="text-xl font-semibold text-center mb-8">Payer par carte</h3>
+                <h3 className="text-xl font-medium text-center mb-8">Payer par carte</h3>
 
                 <div className="space-y-3">
                   <Input
@@ -138,7 +138,7 @@ export function BuyScreensModal({ open, onOpenChange }: BuyScreensModalProps) {
 
             <div className="mt-3 flex items-center justify-center gap-2">
               <div className="flex items-center gap-1 rounded border border-slate-200 px-2.5 py-1 text-[10px] text-slate-600">
-                Propulsé par <span className="font-semibold">stripe</span>
+                Propulsé par <span className="font-medium">stripe</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="flex h-5 w-5 items-center justify-center rounded border border-slate-200">

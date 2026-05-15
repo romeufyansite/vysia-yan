@@ -64,7 +64,7 @@ function CategoryChip({
       <span>{label}</span>
       <span
         className={cn(
-          'inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 text-[10px] font-semibold',
+          'inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 text-[10px] font-medium',
           active ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-600'
         )}
       >
@@ -106,7 +106,7 @@ function ChoiceChip({
 
 function SubLabel({ children }: { children: ReactNode }) {
   return (
-    <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+    <span className="mb-1.5 block text-[10px] font-medium uppercase tracking-wide text-slate-400">
       {children}
     </span>
   );

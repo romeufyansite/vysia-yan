@@ -119,7 +119,7 @@ export function PlaylistPreviewModal({
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 bg-black/80 backdrop-blur-sm border-b border-white/10 z-10">
           <div className="flex items-center gap-3">
-            <span className="text-white font-semibold text-sm truncate max-w-[200px]">
+            <span className="text-white font-medium text-sm truncate max-w-[200px]">
               {playlistName}
             </span>
             {items.length > 0 && (

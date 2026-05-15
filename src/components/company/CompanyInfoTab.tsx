@@ -167,7 +167,7 @@ function SectionHeader({ icon: Icon, title, subtitle }: SectionHeaderProps) {
         <Icon className="h-6 w-6" aria-hidden />
       </div>
       <div className="min-w-0">
-        <h3 className="text-lg font-semibold tracking-tight text-slate-900">{title}</h3>
+        <h3 className="text-lg font-medium tracking-tight text-slate-900">{title}</h3>
         <p className="mt-0.5 text-sm leading-relaxed text-slate-500">{subtitle}</p>
       </div>
     </div>

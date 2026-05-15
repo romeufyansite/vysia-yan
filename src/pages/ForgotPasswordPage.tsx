@@ -47,7 +47,7 @@ export function ForgotPasswordPage() {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-6">
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
-              <h2 className="mb-4 text-2xl font-semibold tracking-tight text-slate-900">Email envoyé !</h2>
+              <h2 className="mb-4 text-2xl font-medium tracking-tight text-slate-900">Email envoyé !</h2>
               <p className="mb-8 text-[15px] leading-relaxed text-slate-600">
                 Un lien de réinitialisation a été envoyé à <strong>{email}</strong>.
                 <br />
@@ -74,13 +74,13 @@ export function ForgotPasswordPage() {
           <div className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 shadow-lg shadow-slate-900/20">
             <Monitor className="h-8 w-8 text-white" />
           </div>
-          <h1 className="mb-2 text-3xl font-semibold tracking-tight text-slate-900">Montet</h1>
+          <h1 className="mb-2 text-3xl font-medium tracking-tight text-slate-900">Montet</h1>
           <p className="text-[15px] text-slate-500">Gestion d&apos;affichage dynamique</p>
         </div>
 
         <Card className="rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-900/10">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-center text-2xl font-semibold tracking-tight text-slate-900">
+            <CardTitle className="text-center text-2xl font-medium tracking-tight text-slate-900">
               Mot de passe oublié
             </CardTitle>
             <CardDescription className="text-center text-[15px] text-slate-500">

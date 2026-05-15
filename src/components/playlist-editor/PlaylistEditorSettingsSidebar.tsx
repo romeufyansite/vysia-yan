@@ -97,7 +97,7 @@ export function PlaylistEditorSettingsSidebar({
        
 
         <section className="space-y-2">
-          <Label htmlFor="playlistSidebarName" className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <Label htmlFor="playlistSidebarName" className="text-xs font-medium uppercase tracking-wide text-slate-500">
             Nom de la playlist
           </Label>
           <Input
@@ -111,7 +111,7 @@ export function PlaylistEditorSettingsSidebar({
         </section>
 
         <section className="space-y-3">
-          <Label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Orientation</Label>
+          <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">Orientation</Label>
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
@@ -149,7 +149,7 @@ export function PlaylistEditorSettingsSidebar({
         </section>
 
         <section className="space-y-2">
-          <Label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Catégorie</Label>
+          <Label className="text-xs font-medium uppercase tracking-wide text-slate-500">Catégorie</Label>
           {creatingGroup && !readOnly ? (
             <div className="flex flex-wrap items-center gap-2">
               <Input

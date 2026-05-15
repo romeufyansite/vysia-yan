@@ -118,7 +118,7 @@ export function PlaylistSettingsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[480px] rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-slate-900">
+          <DialogTitle className="text-xl font-medium text-slate-900">
             Paramètres de la playlist
           </DialogTitle>
           <DialogDescription className="text-sm text-slate-500">

@@ -251,7 +251,7 @@ export function OverlayConfigModal({
               <Icon className={`h-5 w-5 ${meta.iconColor}`} />
             </div>
             <div>
-              <DialogTitle className="text-lg font-semibold text-slate-900">
+              <DialogTitle className="text-lg font-medium text-slate-900">
                 {meta.title}
               </DialogTitle>
               <DialogDescription className="text-sm text-slate-500">
@@ -331,7 +331,7 @@ export function OverlayConfigModal({
 
               {/* Preview */}
               <div className="rounded-xl bg-slate-900 p-6 text-center">
-                <div className={`font-semibold tabular-nums text-white ${
+                <div className={`font-medium tabular-nums text-white ${
                   config.fontSize === 'small' ? 'text-lg' :
                   config.fontSize === 'large' ? 'text-4xl' : 'text-3xl'
                 }`}>

@@ -52,7 +52,7 @@ export function DeletePlaylistDialog({
           </DialogTitle>
           <DialogDescription className="text-base pt-2">
             Êtes-vous sûr de vouloir supprimer la playlist{' '}
-            <span className="font-semibold text-gray-900">{playlistName}</span> ?
+            <span className="font-medium text-gray-900">{playlistName}</span> ?
           </DialogDescription>
         </DialogHeader>
 

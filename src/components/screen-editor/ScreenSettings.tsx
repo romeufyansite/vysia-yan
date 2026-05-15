@@ -258,7 +258,7 @@ export function ScreenSettings({ screen, playlists, onUpdate }: ScreenSettingsPr
     <aside className="w-full lg:w-[380px] xl:w-[420px] h-full bg-white border-l border-slate-200 overflow-y-auto flex-shrink-0">
       <div className="p-5 lg:p-6 space-y-6">
         <section className="space-y-2">
-          <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+          <Label className="text-xs font-medium text-slate-500 uppercase tracking-wide">
             Nom de l'écran
           </Label>
           <Input
@@ -270,7 +270,7 @@ export function ScreenSettings({ screen, playlists, onUpdate }: ScreenSettingsPr
         </section>
 
         <section className="space-y-3">
-          <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+          <Label className="text-xs font-medium text-slate-500 uppercase tracking-wide">
             Orientation
           </Label>
           <div className="grid grid-cols-2 gap-2">
@@ -302,7 +302,7 @@ export function ScreenSettings({ screen, playlists, onUpdate }: ScreenSettingsPr
         </section>
 
         <section className="space-y-3">
-          <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+          <Label className="text-xs font-medium text-slate-500 uppercase tracking-wide">
             Disposition des zones
           </Label>
           <div className="grid grid-cols-2 gap-2">
@@ -356,7 +356,7 @@ export function ScreenSettings({ screen, playlists, onUpdate }: ScreenSettingsPr
                   return (
                     <div key={d.key} className="rounded-xl border border-slate-200 bg-slate-50/70 p-3 space-y-2">
                       <div className="flex items-baseline justify-between gap-2">
-                        <span className="text-sm font-semibold text-slate-900">
+                        <span className="text-sm font-medium text-slate-900">
                           {d.label}
                         </span>
                         <span className="text-xs text-slate-500 shrink-0">{d.share}</span>
@@ -418,11 +418,11 @@ export function ScreenSettings({ screen, playlists, onUpdate }: ScreenSettingsPr
             className="flex w-full items-center justify-between"
           >
             <div className="flex items-center gap-2">
-              <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wide cursor-pointer">
+              <Label className="text-xs font-medium text-slate-500 uppercase tracking-wide cursor-pointer">
                 Overlays
               </Label>
               {activeOverlaysCount > 0 && (
-                <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-slate-900 px-1.5 text-[10px] font-semibold text-white">
+                <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-slate-900 px-1.5 text-[10px] font-medium text-white">
                   {activeOverlaysCount}
                 </span>
               )}
